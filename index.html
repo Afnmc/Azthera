@@ -1,437 +1,293 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="dark">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Azthera SMP</title>
-  <style>
-    /* ---------- Variables ---------- */
-    :root{
-      --bg-dark: #060609;        /* main bg (dark) */
-      --panel-dark: #0f1114;    /* card / panel */
-      --muted-dark: #9aa6b2;
-      --accent-blue: #3da9fc;   /* soft blue */
-      --glass: rgba(255,255,255,0.03);
-      --glass-2: rgba(255,255,255,0.02);
-      --glass-strong: rgba(61,169,252,0.06);
-    }
-    [data-theme="light"]{
-      --bg-dark: #eef3f8;       /* light bg (keeps futuristic vibe) */
-      --panel-dark: #ffffff;
-      --muted-dark: #4d5862;
-      --accent-blue: #2b7cff;
-      --glass: rgba(0,0,0,0.03);
-      --glass-2: rgba(0,0,0,0.02);
-      --glass-strong: rgba(43,124,255,0.06);
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azthera SMP</title>
+<style>
+:root{
+  --bg-dark:#060609;
+  --panel-dark:#0f1114;
+  --muted-dark:#9aa6b2;
+  --accent-blue:#3da9fc;
+  --glass:rgba(255,255,255,0.03);
+  --glass-2:rgba(255,255,255,0.02);
+}
+[data-theme="light"]{
+  --bg-dark:#eef3f8;
+  --panel-dark:#ffffff;
+  --muted-dark:#4d5862;
+  --accent-blue:#2b7cff;
+  --glass:rgba(0,0,0,0.03);
+  --glass-2:rgba(0,0,0,0.02);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif;}
+html,body{height:100%;}
+body{
+  background:var(--bg-dark);
+  color:var(--muted-dark);
+  transition: background .35s,color .25s;
+  overflow:hidden;
+}
 
-    /* ---------- Base ---------- */
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial;}
-    body{
-      background: radial-gradient(1200px 600px at 10% 10%, rgba(61,169,252,0.03), transparent 6%),
-                  linear-gradient(180deg, var(--bg-dark), rgba(0,0,0,0.02) 100%);
-      color: var(--muted-dark);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:28px 16px;
-      transition: background .35s ease, color .25s ease;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
+/* ---------- Welcome ---------- */
+#welcome{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.95));
+  z-index:200;
+  text-align:center;
+}
+#welcome .box{
+  background: var(--panel-dark);
+  padding:24px 28px;
+  border-radius:16px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  max-width:400px;
+}
+#welcome .box h2{color:var(--accent-blue);margin-bottom:12px;}
+#welcome .closeWelcome{
+  margin-top:20px;
+  padding:10px 16px;
+  background:var(--accent-blue);
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font-weight:700;
+}
 
-    /* ---------- Main card (linktree style) ---------- */
-    .card{
-      width:100%;
-      max-width:480px;
-      border-radius:14px;
-      padding:28px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
-      backdrop-filter: blur(6px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-      text-align:center;
-      position:relative;
-      overflow:hidden;
-    }
+/* ---------- Panels Fullscreen with Box ---------- */
+.panel{
+  position:fixed;
+  inset:0;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:130;
+  background: var(--bg-dark);
+}
+.panel.active{display:flex;}
+.panel .box{
+  background: var(--panel-dark);
+  padding:28px;
+  border-radius:16px;
+  width:100%;
+  max-width:480px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.panel h2{color:var(--accent-blue);margin-bottom:12px;font-size:2rem;}
+.panel a{
+  display:block;
+  padding:14px 20px;
+  margin:6px 0;
+  background:var(--glass);
+  border:1px solid var(--glass-2);
+  border-radius:12px;
+  color:inherit;
+  font-weight:700;
+  text-decoration:none;
+  width:220px;
+  text-align:center;
+  transition:.2s;
+}
+.panel a:hover{background:var(--glass-2);}
 
-    .title {
-      margin:0;
-      font-size:1.7rem;
-      font-weight:700;
-      color:var(--accent-blue);
-      letter-spacing:0.2px;
-    }
-    .subtitle { margin:6px 0 14px 0; color:var(--muted-dark); font-size:0.95rem; }
+/* ---------- Server status items ---------- */
+.status-item{
+  width:100%;
+  padding:12px 16px;
+  margin:6px 0;
+  background:var(--glass);
+  border:1px solid var(--glass-2);
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  font-weight:700;
+  color:inherit;
+}
 
-    .links { display:flex; flex-direction:column; gap:12px; margin-top:6px; }
-    .links a{
-      display:block;
-      padding:14px 16px;
-      border-radius:12px;
-      text-decoration:none;
-      color:inherit;
-      font-weight:700;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
-      border:1px solid rgba(255,255,255,0.03);
-      transition: transform .14s ease, box-shadow .14s ease, background .2s;
-    }
-    .links a .emoji{ margin-right:8px }
-    .links a:hover{
-      transform: translateY(-6px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
-    }
+/* ---------- Sidebar ---------- */
+#hamburger{
+  position:fixed; top:16px; right:12px; z-index:150;
+  background:var(--panel-dark);
+  color:var(--accent-blue);
+  border-radius:10px;
+  padding:10px;
+  border:1px solid var(--glass-2);
+  cursor:pointer;
+}
+.mini-drawer{
+  position:fixed; top:0; right:0;
+  width:60px; height:100%;
+  background: var(--panel-dark);
+  display:flex; flex-direction:column; align-items:center; padding-top:70px; gap:10px;
+  transform:translateX(100%);
+  transition:transform .30s ease;
+  z-index:140;
+  border-left:1px solid var(--glass-2);
+}
+.mini-drawer.open{transform:translateX(0);}
+.mini-btn{
+  width:48px; height:48px;
+  background:transparent;
+  border:1px solid var(--glass-2);
+  border-radius:12px;
+  display:flex; justify-content:center; align-items:center;
+  font-size:20px; cursor:pointer;
+  color:var(--accent-blue);
+  transition:.14s;
+}
+.mini-btn:hover{background: var(--glass); transform:translateY(-3px);}
 
-    footer{ margin-top:18px; color:var(--muted-dark); font-size:0.85rem }
-
-    /* ---------- Mini hamburger (top-right) ---------- */
-    #hamburger {
-      position:fixed;
-      right:16px;
-      top:16px;
-      background:var(--panel-dark);
-      color:var(--accent-blue);
-      border-radius:10px;
-      padding:8px 10px;
-      border:1px solid var(--glass-2);
-      cursor:pointer;
-      z-index:80;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.55);
-      transition: transform .16s;
-    }
-    #hamburger:hover{ transform: scale(1.02) }
-
-    /* ---------- Right mini-drawer (icon-only vertical strip) ---------- */
-    .mini-drawer {
-      position:fixed;
-      right:12px;
-      top:50%;
-      transform: translateY(-50%);
-      width:56px;            /* collapsed width (icon-only) */
-      height:auto;
-      background: var(--panel-dark);
-      border-radius:999px;
-      padding:10px 6px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      align-items:center;
-      z-index:70;
-      box-shadow:0 18px 40px rgba(0,0,0,0.6);
-      transition: width .28s ease, border-radius .28s ease, padding .28s ease;
-      overflow:hidden;
-    }
-    .mini-drawer.open {
-      width:82px; /* slightly wider so icons feel comfortable */
-      border-radius:12px;
-      padding:12px;
-    }
-
-    .mini-btn {
-      width:44px; height:44px; border-radius:10px;
-      display:flex; align-items:center; justify-content:center;
-      background:transparent; border:1px solid var(--glass-2);
-      color:var(--accent-blue); cursor:pointer; font-size:18px;
-      transition: background .16s, transform .12s;
-    }
-    .mini-btn:hover { background: var(--glass); transform: translateY(-4px) }
-
-    /* tiny label shown only when drawer open (we keep it minimal but user asked no text; we will keep hidden) */
-    .mini-drawer .label { display:none; font-size:12px; color:var(--muted-dark); margin-top:6px }
-
-    /* ---------- Full panels (appear after selecting icon) ---------- */
-    .panel {
-      position:fixed;
-      inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      background: linear-gradient(180deg, rgba(2,6,23,0.75), rgba(2,6,23,0.88));
-      z-index:200;
-      padding:26px;
-      animation: panelIn .28s ease;
-    }
-    .panel.active { display:flex }
-
-    @keyframes panelIn {
-      from { opacity:0; transform: translateY(8px) scale(.995) }
-      to { opacity:1; transform: translateY(0) scale(1) }
-    }
-
-    .panel .box {
-      width:100%;
-      max-width:720px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
-      border-radius:12px;
-      padding:22px;
-      color:var(--muted-dark);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
-      text-align:left;
-    }
-    .panel h2 { margin:0 0 8px; color:var(--accent-blue); font-size:1.25rem }
-    .panel p { margin:6px 0; color:var(--muted-dark) }
-
-    .panel .close {
-      position:absolute; right:20px; top:20px;
-      background:transparent; border:1px solid var(--glass-2); color:var(--accent-blue);
-      padding:8px 10px;border-radius:10px; cursor:pointer;
-    }
-
-    /* buttons inside panel */
-    .btn {
-      padding:10px 14px; border-radius:10px; border:0; cursor:pointer;
-      background:var(--accent-blue); color:#fff; font-weight:700;
-    }
-    .muted { background:transparent; border:1px solid var(--glass-2); color:var(--muted-dark) }
-
-    /* responsive */
-    @media (max-width:520px){
-      .mini-drawer { right:8px; width:52px }
-      .mini-drawer.open { width:72px }
-      .card { padding:18px }
-    }
-  </style>
+/* ---------- Toggle lever ---------- */
+.toggle-row{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:12px;
+  margin-top:12px;
+  width:100%;
+}
+.toggle-switch{
+  position:relative;
+  width:50px; height:24px;
+  background:var(--glass);
+  border-radius:12px;
+  cursor:pointer;
+  border:1px solid var(--glass-2);
+}
+.toggle-switch .lever{
+  position:absolute;
+  top:2px; left:2px;
+  width:20px; height:20px;
+  background:var(--accent-blue);
+  border-radius:50%;
+  transition:left .2s;
+}
+.toggle-switch.active .lever{left:28px;}
+</style>
 </head>
 <body>
 
-  <!-- main card -->
-  <main class="card" role="main" aria-label="Azthera links">
-    <h1 class="title">Azthera SMP</h1>
-    <div class="subtitle">Selamat datang — official links</div>
+<!-- Welcome -->
+<div id="welcome">
+  <div class="box">
+    <h2>Selamat Datang di Azthera SMP</h2>
+    <p>Klik tombol di bawah untuk masuk ke halaman utama.</p>
+    <button class="closeWelcome">Lanjut</button>
+  </div>
+</div>
 
-    <nav class="links" aria-label="Links">
-      <a class="link" href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" target="_blank"><span class="emoji">🎥</span> YouTube</a>
-      <a class="link" href="https://discord.gg/jfvsWcGpq7" target="_blank"><span class="emoji">🎮</span> Discord</a>
-      <a class="link" href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" target="_blank"><span class="emoji">💬</span> WhatsApp</a>
-      <a class="link" href="https://www.tiktok.com/@azthera.smp" target="_blank"><span class="emoji">🎵</span> TikTok</a>
-      <a class="link" href="https://www.instagram.com/Afn.mc" target="_blank"><span class="emoji">📸</span> Instagram</a>
-    </nav>
+<!-- Hamburger -->
+<button id="hamburger">☰</button>
 
-    <footer>© 2025 Azthera SMP</footer>
-  </main>
+<!-- Sidebar -->
+<aside class="mini-drawer" id="drawer">
+  <button class="mini-btn" id="homeBtn">🏠</button>
+  <button class="mini-btn" id="statusBtn">📊</button>
+  <button class="mini-btn" id="settingsBtn">⚙️</button>
+</aside>
 
-  <!-- hamburger quick access (also toggles drawer) -->
-  <button id="hamburger" aria-label="Open menu">☰</button>
+<!-- Panels Fullscreen with Box -->
+<section class="panel" id="homePanel">
+  <div class="box">
+    <h2>Azthera SMP</h2>
+    <a href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" target="_blank">YouTube</a>
+    <a href="https://www.tiktok.com/@azthera.smp" target="_blank">TikTok</a>
+    <a href="https://www.instagram.com/Afn.mc" target="_blank">Instagram</a>
+    <a href="https://discord.gg/jfvsWcGpq7" target="_blank">Discord</a>
+    <a href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" target="_blank">WhatsApp</a>
+  </div>
+</section>
 
-  <!-- mini drawer (icon-only vertical strip) -->
-  <aside id="drawer" class="mini-drawer" role="navigation" aria-label="Sidebar menu">
-    <button id="drawerToggle" class="mini-btn" aria-label="Toggle drawer">≡</button>
-    <!-- icons only (no text) -->
-    <button id="homeBtn" class="mini-btn" title="Home" aria-label="Home">🏠</button>
-    <button id="statusBtn" class="mini-btn" title="Status" aria-label="Status">📊</button>
-    <button id="settingsBtn" class="mini-btn" title="Settings" aria-label="Settings">⚙️</button>
-  </aside>
+<section class="panel" id="statusPanel">
+  <div class="box">
+    <h2>Status Server</h2>
+    <div class="status-item"><span>Alamat</span><span>mc.noxstore.site:25567</span></div>
+    <div class="status-item"><span>Status</span><span id="serverState">Checking...</span></div>
+    <div class="status-item"><span>Players</span><span id="serverPlayers">-</span></div>
+  </div>
+</section>
 
-  <!-- Panel: Home (full background) -->
-  <section id="homePanel" class="panel" aria-hidden="true">
-    <button class="close" id="closeHome">✕</button>
-    <div class="box">
-      <h2>Selamat datang di Azthera SMP</h2>
-      <p>Halo! Selamat datang di halaman resmi Azthera SMP. Di sini ada link resmi komunitas — Discord, WhatsApp, TikTok, Instagram, dan YouTube.</p>
-      <p style="margin-top:12px;color:var(--muted-dark)">Gunakan menu di kanan untuk cek status server atau ubah pengaturan.</p>
+<section class="panel" id="settingsPanel">
+  <div class="box">
+    <h2>Pengaturan</h2>
+    <div class="toggle-row">
+      <span>Tema: </span>
+      <div class="toggle-switch" id="themeToggle"><div class="lever"></div></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Panel: Status -->
-  <section id="statusPanel" class="panel" aria-hidden="true">
-    <button class="close" id="closeStatus">✕</button>
-    <div class="box">
-      <h2>Status Server</h2>
-      <p><strong>Alamat:</strong> mc.noxstore.site:25567</p>
-      <p><strong>Status:</strong> <span id="serverState">Checking...</span></p>
-      <p><strong>Players:</strong> <span id="serverPlayers">-</span></p>
-      <p><strong>Ping (TrueMS):</strong> <span id="serverPing">-</span></p>
-      <div style="margin-top:12px;display:flex;gap:10px">
-        <button id="refreshBtn" class="btn">Refresh</button>
-        <button id="closeStatusBtn" class="muted">Tutup</button>
-      </div>
-    </div>
-  </section>
+<script>
+// Welcome
+const welcome=document.getElementById('welcome');
+const closeWelcome=document.querySelector('.closeWelcome');
+const homePanel=document.getElementById('homePanel');
+closeWelcome.addEventListener('click',()=>{
+  welcome.style.display='none';
+  homePanel.classList.add('active');
+});
 
-  <!-- Panel: Settings -->
-  <section id="settingsPanel" class="panel" aria-hidden="true">
-    <button class="close" id="closeSettings">✕</button>
-    <div class="box">
-      <h2>Pengaturan</h2>
-      <p style="color:var(--muted-dark)">Tema</p>
-      <div style="display:flex;gap:10px;margin-top:8px">
-        <button id="themeDark" class="btn" style="flex:1">Dark</button>
-        <button id="themeLight" class="muted" style="flex:1">Light</button>
-      </div>
+// Sidebar toggle
+const hamburger=document.getElementById('hamburger');
+const drawer=document.getElementById('drawer');
+let drawerOpen=false;
+hamburger.addEventListener('click',()=>{
+  drawerOpen=!drawerOpen;
+  drawer.classList.toggle('open',drawerOpen);
+});
 
-      <hr style="margin:14px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)">
+// Panel buttons
+const homeBtn=document.getElementById('homeBtn');
+const statusBtn=document.getElementById('statusBtn');
+const settingsBtn=document.getElementById('settingsBtn');
+const statusPanel=document.getElementById('statusPanel');
+const settingsPanel=document.getElementById('settingsPanel');
+function openPanel(panel){
+  [homePanel,statusPanel,settingsPanel].forEach(p=>p.classList.remove('active'));
+  panel.classList.add('active');
+}
+homeBtn.addEventListener('click',()=>openPanel(homePanel));
+statusBtn.addEventListener('click',()=>openPanel(statusPanel));
+settingsBtn.addEventListener('click',()=>openPanel(settingsPanel));
 
-      <p style="color:var(--muted-dark)">Aksi</p>
-      <div style="display:flex;gap:10px;margin-top:8px">
-        <button id="copyAddr" class="btn" style="flex:1">Salin Alamat Server</button>
-        <button id="aboutBtn" class="muted" style="flex:1">Tentang</button>
-      </div>
-    </div>
-  </section>
+// Server status
+const serverState=document.getElementById('serverState');
+const serverPlayers=document.getElementById('serverPlayers');
+async function fetchServer(){
+  try{
+    const res=await fetch('https://api.mcstatus.io/v2/status/java/mc.noxstore.site:25567',{cache:'no-store'});
+    const data=await res.json();
+    serverState.textContent=data.online?'🟢 Online':'🔴 Offline';
+    serverPlayers.textContent=data.players?.online+'/'+data.players?.max;
+  }catch{
+    serverState.textContent='⚪ Error';
+    serverPlayers.textContent='-';
+  }
+}
+setInterval(()=>{if(statusPanel.classList.contains('active')) fetchServer();},10000);
 
-  <script>
-    /* ---------- Elements ---------- */
-    const hamburger = document.getElementById('hamburger');
-    const drawer = document.getElementById('drawer');
-    const drawerToggle = document.getElementById('drawerToggle');
-    const homeBtn = document.getElementById('homeBtn');
-    const statusBtn = document.getElementById('statusBtn');
-    const settingsBtn = document.getElementById('settingsBtn');
-
-    const homePanel = document.getElementById('homePanel');
-    const statusPanel = document.getElementById('statusPanel');
-    const settingsPanel = document.getElementById('settingsPanel');
-
-    const closeHome = document.getElementById('closeHome');
-    const closeStatus = document.getElementById('closeStatus');
-    const closeSettings = document.getElementById('closeSettings');
-
-    const closeStatusBtn = document.getElementById('closeStatusBtn');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const serverState = document.getElementById('serverState');
-    const serverPlayers = document.getElementById('serverPlayers');
-    const serverPing = document.getElementById('serverPing');
-
-    const themeDark = document.getElementById('themeDark');
-    const themeLight = document.getElementById('themeLight');
-    const copyAddr = document.getElementById('copyAddr');
-    const aboutBtn = document.getElementById('aboutBtn');
-
-    const SERVER = 'mc.noxstore.site';
-    const PORT = '25567';
-
-    /* ---------- Drawer logic ---------- */
-    let drawerOpen = false;
-    function openDrawer(){
-      drawer.classList.add('open');
-      drawerOpen = true;
-      // show tiny labels? user wanted no text, so we keep icons only
-    }
-    function closeDrawer(){
-      drawer.classList.remove('open');
-      drawerOpen = false;
-    }
-    // toggle by hamburger or drawerToggle
-    hamburger.addEventListener('click', ()=> drawerOpen ? closeDrawer() : openDrawer());
-    drawerToggle.addEventListener('click', ()=> drawerOpen ? closeDrawer() : openDrawer());
-
-    // close drawer when clicking outside
-    document.addEventListener('click', (e)=>{
-      if(drawerOpen){
-        if(!drawer.contains(e.target) && !hamburger.contains(e.target)){
-          closeDrawer();
-        }
-      }
-    });
-
-    /* ---------- Panels open (icon click) ---------- */
-    function openPanel(panel){
-      // close drawer first (per spec)
-      closeDrawer();
-      // close any other panel
-      [homePanel, statusPanel, settingsPanel].forEach(p => p.classList.remove('active'));
-      // open requested
-      panel.classList.add('active');
-      panel.setAttribute('aria-hidden','false');
-      // if status, fetch immediately
-      if(panel === statusPanel) fetchServerStatus();
-    }
-    function closePanel(panel){
-      panel.classList.remove('active');
-      panel.setAttribute('aria-hidden','true');
-    }
-
-    homeBtn.addEventListener('click', ()=> openPanel(homePanel));
-    statusBtn.addEventListener('click', ()=> openPanel(statusPanel));
-    settingsBtn.addEventListener('click', ()=> openPanel(settingsPanel));
-
-    closeHome.addEventListener('click', ()=> closePanel(homePanel));
-    closeStatus.addEventListener('click', ()=> closePanel(statusPanel));
-    closeSettings.addEventListener('click', ()=> closePanel(settingsPanel));
-    closeStatusBtn.addEventListener('click', ()=> closePanel(statusPanel));
-
-    /* close panels with Escape key */
-    document.addEventListener('keydown', (e)=>{
-      if(e.key === 'Escape'){
-        [homePanel, statusPanel, settingsPanel].forEach(p=> p.classList.remove('active'));
-        closeDrawer();
-      }
-    });
-
-    /* ---------- Theme (persist) ---------- */
-    function applyTheme(t){
-      if(t === 'light'){
-        document.documentElement.setAttribute('data-theme','light');
-      } else {
-        document.documentElement.setAttribute('data-theme','dark');
-      }
-      localStorage.setItem('az_theme', t);
-    }
-    themeDark.addEventListener('click', ()=> applyTheme('dark'));
-    themeLight.addEventListener('click', ()=> applyTheme('light'));
-    // init theme: prefer saved or dark default
-    const savedTheme = localStorage.getItem('az_theme') || 'dark';
-    applyTheme(savedTheme);
-
-    /* ---------- Server status fetch (TrueMS) ---------- */
-    async function fetchServerStatus(){
-      serverState.textContent = 'Checking...';
-      serverPlayers.textContent = '-';
-      serverPing.textContent = '-';
-      try {
-        const url = `https://api.mcstatus.io/v2/status/java/${SERVER}:${PORT}`;
-        const t0 = performance.now();
-        const res = await fetch(url, {cache:'no-store'});
-        const t1 = performance.now();
-        const data = await res.json();
-        const truePing = Math.round(t1 - t0);
-
-        if(data && data.online){
-          serverState.textContent = '🟢 Online';
-          serverPlayers.textContent = `${data.players?.online ?? 0}/${data.players?.max ?? '?'}`;
-          serverPing.textContent = `${truePing} ms`;
-        } else {
-          serverState.textContent = '🔴 Offline';
-          serverPlayers.textContent = '0';
-          serverPing.textContent = '-';
-        }
-      } catch(err){
-        serverState.textContent = '⚪ Error';
-        serverPlayers.textContent = '-';
-        serverPing.textContent = '-';
-      }
-    }
-    refreshBtn.addEventListener('click', fetchServerStatus);
-
-    // auto-refresh while statusPanel is open: start interval when open
-    let statusInterval = null;
-    const observer = new MutationObserver(()=> {
-      if(statusPanel.classList.contains('active')){
-        if(!statusInterval) statusInterval = setInterval(fetchServerStatus, 10000);
-      } else {
-        if(statusInterval){ clearInterval(statusInterval); statusInterval = null; }
-      }
-    });
-    observer.observe(statusPanel, { attributes: true, attributeFilter: ['class'] });
-
-    /* ---------- Copy address & about ---------- */
-    copyAddr.addEventListener('click', ()=>{
-      const addr = `${SERVER}:${PORT}`;
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(addr).then(()=> {
-          copyAddr.textContent = 'Tersalin!';
-          setTimeout(()=> copyAddr.textContent = 'Salin Alamat Server', 1400);
-        });
-      } else {
-        alert(addr);
-      }
-    });
-    aboutBtn.addEventListener('click', ()=> alert('Azthera SMP — komunitas server. Dibuat oleh tim Azthera.'));
-
-    /* ---------- Accessibility: focus trap minimal for panel (optional lightweight) ---------- */
-    // no heavy focus trap to keep simple; panels closable by ESC and close button
-
-    /* ---------- Init: nothing else ---------- */
-  </script>
+// Theme toggle lever
+const themeToggle=document.getElementById('themeToggle');
+const htmlEl=document.documentElement;
+let theme=localStorage.getItem('az_theme')||'dark';
+function applyTheme(t){
+  htmlEl.setAttribute('data-theme',t);
+  themeToggle.classList.toggle('active',t==='light');
+  localStorage.setItem('az_theme',t);
+}
+themeToggle.addEventListener('click',()=>{
+  theme=(theme==='dark'?'light':'dark');
+  applyTheme(theme);
+});
+applyTheme(theme);
+</script>
 </body>
-          </html>
+</html>

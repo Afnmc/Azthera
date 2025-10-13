@@ -1,348 +1,234 @@
-<!DOCTYPE html>
+here<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Azhtera · Links</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Azthera Network</title>
   <style>
-    :root{
-      --bg: #eef2f5;
-      --card: #fff;
-      --text: #0b2b6b;
-      --accent: #0047ff;
-      --muted: #6b7280;
-      --glass: rgba(255,255,255,0.6);
-      --shadow: 0 8px 24px rgba(2,6,23,0.08);
-      --glow: 0 0 18px rgba(0,71,255,0.12);
-    }
-    [data-theme="dark"]{
-      --bg: #0b1220;
-      --card: #0f1724;
-      --text: #e6eefc;
-      --accent: #3ea0ff;
-      --muted: #9aa7bf;
-      --glass: rgba(255,255,255,0.03);
-      --shadow: 0 8px 30px rgba(2,6,23,0.6);
-      --glow: 0 0 22px rgba(62,160,255,0.08);
+    :root {
+      --bg: #0a0a0a;
+      --card: #111;
+      --text: #e0e0e0;
+      --accent: #00d1ff;
+      --hover: #00d1ff30;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
-    body{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background: linear-gradient(180deg,var(--bg), #dfe8f5 160%);
-      padding:40px 20px;
-      color:var(--text);
-      transition: background .3s ease;
+    [data-theme="light"] {
+      --bg: #f8f9fb;
+      --card: #ffffff;
+      --text: #0a0a0a;
+      --accent: #008cff;
+      --hover: #008cff10;
     }
 
-    .wrap{
-      width:100%;
-      max-width:460px;
-      position:relative;
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      overflow-x: hidden;
     }
 
-    /* top-right controls: theme + server status */
-    .topbar{
-      position:absolute;
-      right:0;
-      top:-10px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      transform: translateY(-50%);
+    h1 {
+      font-size: 2.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 10px var(--accent);
+      margin-bottom: 5px;
+      animation: glow 3s infinite ease-in-out;
     }
-    .chip{
-      background:var(--card);
-      padding:8px 12px;
-      border-radius:999px;
-      box-shadow:var(--shadow);
-      display:flex;
-      gap:10px;
-      align-items:center;
-      font-size:13px;
-      color:var(--muted);
-      backdrop-filter: blur(6px);
-    }
-    .server-status{
-      min-width:170px;
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .dot {
-      width:12px;height:12px;border-radius:50%;
-      background:#cbd5e1;box-shadow:0 0 6px rgba(0,0,0,0.08);
-    }
-    .dot.online{background:#22c55e; box-shadow:0 0 10px rgba(34,197,94,0.22)}
-    .dot.offline{background:#ef4444; box-shadow:0 0 10px rgba(239,68,68,0.18)}
-    .small{font-size:12px;color:var(--muted)}
 
-    .container{
-      background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.02));
-      border-radius:20px;
-      padding:28px;
-      box-shadow:var(--shadow);
-      transition: transform .25s ease, box-shadow .25s ease;
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 5px var(--accent); }
+      50% { text-shadow: 0 0 15px var(--accent); }
     }
-    .profile{
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .avatar{
-      width:120px;height:120px;border-radius:50%;overflow:hidden;
-      box-shadow:0 6px 20px rgba(2,6,23,0.12);
-    }
-    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
 
-    h1{margin:0;font-size:1.4rem;color:var(--accent);font-weight:700}
-    p.desc{margin:0;color:var(--muted);font-size:14px;margin-bottom:14px}
-
-    .links{display:flex;flex-direction:column;gap:12px;padding-top:8px}
-    .link{
-      display:flex;align-items:center;justify-content:center;
-      gap:10px;
-      padding:14px 16px;border-radius:12px;
-      text-decoration:none;color:var(--accent);
-      font-weight:700;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
-      border: 1px solid rgba(0,71,255,0.06);
-      box-shadow: var(--glow);
-      transform: translateY(0);
-      transition: transform .18s ease, box-shadow .18s ease, background .18s;
-      position:relative; overflow:hidden;
+    .link-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 80%;
+      max-width: 400px;
+      margin-top: 10px;
     }
-    .link:hover{transform:translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,23,0.12)}
-    .link .emoji{font-size:18px}
-    .link::after{
-      content:"";position:absolute;left:0;top:0;height:100%;width:0;background:linear-gradient(90deg, rgba(0,71,255,0.12), rgba(62,160,255,0.06));
-      transition:width .28s ease;
-    }
-    .link:hover::after{width:100%}
 
-    .footer{margin-top:18px;color:var(--muted);text-align:center;font-size:13px}
-
-    /* toggle */
-    .theme-toggle{
-      width:44px;height:28px;border-radius:999px;padding:4px;background:linear-gradient(180deg,#fff,#f3f4f6);
-      display:flex;align-items:center;gap:6px;cursor:pointer;position:relative;border:0;
+    .link {
+      background-color: var(--card);
+      color: var(--text);
+      text-decoration: none;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #222;
+      transition: all 0.2s ease;
     }
-    .theme-toggle .knob{
-      width:20px;height:20px;border-radius:50%;background:var(--accent);transition:left .2s ease, transform .2s;
-      position:absolute;left:4px;box-shadow:0 6px 14px rgba(2,6,23,0.12)
-    }
-    [data-theme="dark"] .theme-toggle{background:linear-gradient(180deg,#0f1724,#0b1220)}
-    [data-theme="dark"] .theme-toggle .knob{left:20px;background:var(--accent)}
 
-    /* responsive */
-    @media (max-width:420px){
-      .wrap{padding:12px}
-      .container{padding:22px}
-      .avatar{width:100px;height:100px}
+    .link:hover {
+      background-color: var(--hover);
+      transform: scale(1.02);
+    }
+
+    footer {
+      margin-top: 40px;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    /* ⚙️ Tombol Settings */
+    #settingsBtn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background-color: var(--card);
+      color: var(--text);
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    #settingsBtn:hover {
+      background-color: var(--hover);
+    }
+
+    /* ⚙️ Panel Settings */
+    #settingsPanel {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: var(--card);
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 20px;
+      width: 90%;
+      max-width: 350px;
+      box-shadow: 0 0 20px #00000080;
+      z-index: 10;
+    }
+
+    #settingsPanel.active {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -48%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    #settingsPanel h2 {
+      margin-top: 0;
+      color: var(--accent);
+    }
+
+    .closeBtn {
+      margin-top: 15px;
+      background-color: var(--hover);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .dark-toggle {
+      margin-top: 10px;
+      background-color: var(--hover);
+      border: none;
+      border-radius: 8px;
+      color: var(--text);
+      padding: 10px;
+      cursor: pointer;
+      width: 100%;
     }
   </style>
 </head>
-<body>
-  <div class="wrap" id="wrap">
-    <div class="topbar">
-      <div class="chip server-status" id="server-chip" title="Server status">
-        <div class="dot offline" id="server-dot"></div>
-        <div style="display:flex;flex-direction:column">
-          <div style="font-weight:700;font-size:13px" id="server-state">Checking...</div>
-          <div class="small" id="server-more">mc.noxstore.site:25567</div>
-        </div>
-        <div style="width:10px"></div>
-        <div class="small" id="players">—</div>
-        <div class="small" style="margin-left:8px">Ping: <span id="ping">—</span>ms</div>
-      </div>
+<body data-theme="dark">
+  <button id="settingsBtn">⚙️ Settings</button>
 
-      <div class="chip" style="padding:6px 8px">
-        <div class="theme-toggle" id="themeToggle" aria-label="toggle theme" title="Toggle theme">
-          <div class="knob" id="knob"></div>
-        </div>
-      </div>
+  <div id="settingsPanel">
+    <h2>⚙️ Settings</h2>
+    <div id="serverInfo">
+      <p>Server: <strong>mc.noxstore.site:25567</strong></p>
+      <p>Status: <span id="server-status">Checking...</span></p>
+      <p>Player: <span id="player-count">-</span></p>
+      <p>Ping: <span id="ping">-</span></p>
     </div>
-
-    <div class="container" id="mainCard">
-      <div class="profile">
-        <div class="avatar"><img src="https://i.imghippo.com/files/cZXw7832SCU.png" alt="Azhtera"></div>
-        <h1>Azhtera SMP</h1>
-        <p class="desc">Server community & social links</p>
-      </div>
-
-      <div class="links" id="links">
-        <a class="link" href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" target="_blank"><span class="emoji">🎥</span> YouTube</a>
-        <a class="link" href="https://discord.gg/jfvsWcGpq7" target="_blank"><span class="emoji">🎮</span> Discord Server</a>
-        <a class="link" href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" target="_blank"><span class="emoji">💬</span> WhatsApp Community</a>
-        <a class="link" href="https://www.tiktok.com/@azthera.smp.servr" target="_blank"><span class="emoji">🎵</span> TikTok</a>
-        <a class="link" href="https://www.instagram.com/Afn.mc" target="_blank"><span class="emoji">📸</span> Instagram</a>
-      </div>
-
-      <div class="footer">© <span id="year"></span> Azhtera SMP</div>
-    </div>
+    <button id="toggleDark" class="dark-toggle">🌙 Toggle Dark Mode</button>
+    <button id="closeSettings" class="closeBtn">Tutup</button>
   </div>
 
+  <h1>Azthera SMP Network</h1>
+  <p>Welcome to the Official Links</p>
+
+  <div class="link-container">
+    <a href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" class="link">🎥 YouTube</a>
+    <a href="https://discord.gg/jfvsWcGpq7" class="link">💬 Discord</a>
+    <a href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" class="link">📱 WhatsApp</a>
+    <a href="https://www.tiktok.com/@azthera.smp.servr" class="link">🎵 TikTok</a>
+    <a href="https://www.instagram.com/Afn.mc" class="link">📸 Instagram</a>
+  </div>
+
+  <footer>© 2025 Azthera Network</footer>
+
   <script>
-    // --- theme toggle + persist ---
-    const root = document.documentElement;
-    const wrap = document.getElementById('wrap');
-    const themeToggle = document.getElementById('themeToggle');
-    const knob = document.getElementById('knob');
+    const SERVER_HOST = "mc.noxstore.site";
+    const SERVER_PORT = "25567";
+    const statusEl = document.getElementById("server-status");
+    const playerEl = document.getElementById("player-count");
+    const pingEl = document.getElementById("ping");
+    const settingsPanel = document.getElementById("settingsPanel");
+    const settingsBtn = document.getElementById("settingsBtn");
+    const closeBtn = document.getElementById("closeSettings");
+    const toggleDark = document.getElementById("toggleDark");
 
-    function applyTheme(t){
-      if(t === 'dark') document.documentElement.setAttribute('data-theme','dark');
-      else document.documentElement.removeAttribute('data-theme');
-      localStorage.setItem('az_theme', t);
-    }
-    // init
-    const saved = localStorage.getItem('az_theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    applyTheme(saved);
+    // 🌐 Fetch status server
+    async function fetchStatus() {
+      const start = performance.now();
+      statusEl.textContent = "Checking...";
+      try {
+        const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SERVER_HOST}:${SERVER_PORT}`);
+        const end = performance.now();
+        const truePing = Math.round(end - start);
+        const data = await res.json();
 
-    themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-      applyTheme(current === 'dark' ? 'light' : 'dark');
-    });
-
-    // set year
-    document.getElementById('year').innerText = new Date().getFullYear();
-
-    // --- SERVER STATUS LOGIC ---
-    const SERVER_HOST = 'mc.noxstore.site';
-    const SERVER_PORT = 25567;
-    const serverDot = document.getElementById('server-dot');
-    const serverState = document.getElementById('server-state');
-    const serverMore = document.getElementById('server-more');
-    const playersEl = document.getElementById('players');
-    const pingEl = document.getElementById('ping');
-
-    // Try multiple public APIs (some provide players/ping). Uses Promise.any (try sequentially for broader support)
-    async function queryServer() {
-      serverState.textContent = 'Checking...';
-      serverDot.className = 'dot';
-      playersEl.textContent = '—';
-      pingEl.textContent = '—';
-      serverMore.textContent = `${SERVER_HOST}:${SERVER_PORT}`;
-
-      // helper: fetch with timeout
-      function ffetch(url, options = {}, timeout = 8000){
-        return new Promise((res, rej) => {
-          const timer = setTimeout(()=> rej(new Error('timeout')), timeout);
-          fetch(url, options).then(r => { clearTimeout(timer); res(r) }).catch(e => { clearTimeout(timer); rej(e) });
-        });
-      }
-
-      // Candidate APIs (client-side). Not guaranteed by CORS - code will fallback gracefully.
-      const endpoints = [
-        // mcapi.us often returns {online, players, etc}
-        `https://api.mcsrvstat.us/2/${SERVER_HOST}:${SERVER_PORT}`,
-        // alternative ping api
-        `https://api.mcsrv.eu/ping/${SERVER_HOST}/${SERVER_PORT}`,
-        // mcapi (may include latency)
-        `https://api.mcsrvstat.us/2/${SERVER_HOST}`,
-        // third attempt (some regions)
-        `https://mcapi.us/server/status?ip=${SERVER_HOST}&port=${SERVER_PORT}`
-      ];
-
-      // Try each endpoint until one works
-      for(const url of endpoints){
-        try {
-          const resp = await ffetch(url, {cache:'no-store'}, 8000);
-          if(!resp.ok) continue;
-          const data = await resp.json();
-          // Try to normalize different response shapes
-          if(data && (data.online === true || data.online === false || data.status === 'success' || data.players || data.players && data.players.online !== undefined)) {
-            // mcsrvstat.us shape
-            if(data.online !== undefined) {
-              const online = data.online === true;
-              serverDot.className = 'dot ' + (online ? 'online' : 'offline');
-              serverState.textContent = online ? 'Online' : 'Offline';
-              // players
-              let onlinePlayers = '—';
-              if(data.players && typeof data.players.online === 'number') onlinePlayers = `${data.players.online}/${data.players.max||'?'}`;
-              if(data.players && typeof data.players.online !== 'number' && typeof data.players === 'object') {
-                if(data.players.online !== undefined) onlinePlayers = `${data.players.online}/${data.players.max||'?'}`;
-              }
-              // some endpoints put players differently (mcapi.us)
-              if(data.players && typeof data.players === 'object' && data.players.now != undefined) {
-                onlinePlayers = `${data.players.now}/${data.players.max||'?'}`;
-              }
-              // ping: mcsrvstat.us doesn't give ping; some API do (latency)
-              let ping = (data.debug && data.debug.ping) ? data.debug.ping : (data.latency || data.ping || (data.query && data.query.latency) || null);
-              if(ping == null) ping = '—';
-              playersEl.textContent = onlinePlayers;
-              pingEl.textContent = ping;
-              return;
-            }
-
-            // api.mcsrv.eu shape: {online:true, players:{now:1,max:20}, latency: 120}
-            if(data.online !== undefined || data.players !== undefined) {
-              const online = !!data.online;
-              serverDot.className = 'dot ' + (online ? 'online' : 'offline');
-              serverState.textContent = online ? 'Online' : 'Offline';
-              let onlinePlayers = '—';
-              if(data.players && (data.players.online !== undefined || data.players.now !== undefined)) {
-                if(data.players.online !== undefined) onlinePlayers = `${data.players.online}/${data.players.max||'?'}`;
-                else onlinePlayers = `${data.players.now}/${data.players.max||'?'}`;
-              }
-              const ping = data.ping || data.latency || '—';
-              playersEl.textContent = onlinePlayers;
-              pingEl.textContent = ping;
-              return;
-            }
-
-            // mcapi.us shape: data.online, data.players.now, data.latency
-            if(data.online !== undefined) {
-              const online = !!data.online;
-              serverDot.className = 'dot ' + (online ? 'online' : 'offline');
-              serverState.textContent = online ? 'Online' : 'Offline';
-              const onlinePlayers = data.players && (data.players.now !== undefined) ? `${data.players.now}/${data.players.max||'?'}` : '—';
-              const ping = data.latency || data.ping || '—';
-              playersEl.textContent = onlinePlayers;
-              pingEl.textContent = ping;
-              return;
-            }
-          }
-        } catch(e){
-          // try next endpoint
-          //console.log('endpoint failed', url, e);
-          continue;
+        if (data.online) {
+          statusEl.textContent = "🟢 Online";
+          playerEl.textContent = `${data.players.online}/${data.players.max}`;
+          pingEl.textContent = `${truePing} ms`;
+        } else {
+          statusEl.textContent = "🔴 Offline";
+          playerEl.textContent = "0";
+          pingEl.textContent = "-";
         }
+      } catch (e) {
+        statusEl.textContent = "⚪ Error";
       }
-
-      // If reached here, couldn't fetch via APIs (CORS or offline) -> show fallback
-      serverDot.className = 'dot offline';
-      serverState.textContent = 'Unknown';
-      playersEl.textContent = '—';
-      pingEl.textContent = '—';
     }
 
-    // initial fetch + periodic poll every 20s
-    queryServer();
-    setInterval(queryServer, 20000);
+    // 🕹️ Interaksi panel setting
+    settingsBtn.onclick = () => settingsPanel.classList.add("active");
+    closeBtn.onclick = () => settingsPanel.classList.remove("active");
 
-    // Small UX: click server chip to open server address in new tab (or copy)
-    document.getElementById('server-chip').addEventListener('click', ()=> {
-      // try copy to clipboard
-      const addr = `${SERVER_HOST}:${SERVER_PORT}`;
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(addr).then(()=> {
-          serverState.textContent = 'Copied address';
-          setTimeout(()=> queryServer(), 1200);
-        }).catch(()=> window.open(`https://${SERVER_HOST}`, '_blank'));
-      } else {
-        window.open(`https://${SERVER_HOST}`, '_blank');
-      }
-    });
+    // 🌙 Toggle dark/light mode
+    toggleDark.onclick = () => {
+      const current = document.body.getAttribute("data-theme");
+      document.body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+      toggleDark.textContent = current === "dark" ? "☀️ Switch to Dark Mode" : "🌙 Switch to Light Mode";
+    };
 
-    // friendly focus animation
-    const mainCard = document.getElementById('mainCard');
-    mainCard.addEventListener('mouseover', ()=> mainCard.style.transform = 'translateY(-4px)');
-    mainCard.addEventListener('mouseout', ()=> mainCard.style.transform = 'translateY(0)');
-
+    // Jalankan saat load + tiap 1 menit
+    fetchStatus();
+    setInterval(fetchStatus, 60000);
   </script>
 </body>
 </html>

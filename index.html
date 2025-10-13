@@ -1,306 +1,379 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Azthera SMP</title>
   <style>
-    :root {
-      --bg: #0b0c0f;
-      --card: #15171b;
-      --text: #e0e0e0;
-      --accent: #3399ff;
-      --hover: #3399ff30;
+    :root{
+      --bg-dark: #070707;
+      --card-dark: #121215;
+      --text-dark: #e9eef6;
+      --accent: #3da9fc; /* soft blue */
+      --muted: #9aa6b2;
+      --glass: rgba(255,255,255,0.03);
+    }
+    [data-theme="light"]{
+      --bg-dark: #f6f8fb;
+      --card-dark: #ffffff;
+      --text-dark: #0b0b0b;
+      --accent: #2b7cff;
+      --muted: #56606b;
+      --glass: rgba(0,0,0,0.03);
     }
 
-    [data-theme="light"] {
-      --bg: #f4f7fa;
-      --card: #ffffff;
-      --text: #0b0c0f;
-      --accent: #2979ff;
-      --hover: #2979ff20;
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial;}
+    body{
+      background:var(--bg-dark);
+      color:var(--text-dark);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 20px;
+      transition:background .25s,color .25s;
+      -webkit-font-smoothing:antialiased;
     }
 
-    * {
-      transition: background-color 0.3s, color 0.3s;
+    /* Main card (linktree style) */
+    .card{
+      width:100%;
+      max-width:460px;
+      background:linear-gradient(180deg,var(--card-dark),rgba(255,255,255,0.02));
+      border-radius:16px;
+      padding:28px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.6);
+      text-align:center;
+      position:relative;
+      overflow:hidden;
     }
 
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      text-align: center;
-      overflow-x: hidden;
+    .title{
+      margin:0 0 6px 0;
+      font-size:1.6rem;
+      font-weight:700;
+      color:var(--accent);
+      text-shadow:0 0 8px rgba(61,169,252,0.06);
+    }
+    .subtitle{margin:0;color:var(--muted);font-size:0.95rem;margin-bottom:18px}
+
+    .links{display:flex;flex-direction:column;gap:12px}
+    .links a{
+      display:block;padding:12px 16px;border-radius:12px;
+      background:var(--bg-dark); color:var(--text-dark);
+      text-decoration:none;border:1px solid rgba(255,255,255,0.03);
+      font-weight:600;transition:transform .14s ease, box-shadow .14s;
+    }
+    .links a:hover{transform:translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,0.45)}
+    .links a .emoji{margin-right:8px}
+
+    footer{margin-top:18px;color:var(--muted);font-size:0.85rem}
+
+    /* menu button (hamburger) top-right fixed) */
+    #menuBtn{
+      position:fixed; right:18px; top:18px;
+      background:var(--card-dark); color:var(--accent);
+      border:1px solid rgba(255,255,255,0.02);
+      padding:8px 10px;border-radius:10px; cursor:pointer; z-index:50;
+      box-shadow:0 6px 18px rgba(0,0,0,0.6);
+    }
+    #menuBtn:hover{transform:scale(1.03)}
+
+    /* right side drawer (thin) */
+    .drawer{
+      position:fixed;
+      right:12px;
+      top:50%;
+      transform:translateY(-50%);
+      width:64px;
+      background:var(--card-dark);
+      border-radius:999px;
+      padding:10px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:center;
+      z-index:45;
+      box-shadow:0 10px 30px rgba(0,0,0,0.5);
+      transition:width .28s ease, background .28s;
+      overflow:hidden;
+    }
+    .drawer.open{width:320px;border-radius:12px;padding:18px 16px}
+    .drawer .drawer-title{color:var(--accent);font-weight:700;margin-bottom:6px;opacity:0;transition:opacity .2s}
+    .drawer.open .drawer-title{opacity:1}
+    .drawer .icon-btn{
+      width:44px;height:44px;border-radius:10px;background:var(--glass);
+      display:flex;align-items:center;justify-content:center;color:var(--accent);cursor:pointer;
+      border:1px solid rgba(255,255,255,0.02);
+    }
+    .drawer .menu-item{
+      display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;cursor:pointer;color:var(--text-dark);
+      width:100%;background:transparent;border:none;text-align:left;font-weight:600;
+    }
+    .drawer .menu-item:hover{background:rgba(255,255,255,0.02); color:var(--accent)}
+
+    /* full panel (content opened after selecting) */
+    .panel{
+      position:fixed; inset:0; display:none; z-index:60;
+      background:linear-gradient(180deg, rgba(0,0,0,0.72), rgba(0,0,0,0.88));
+      align-items:center;justify-content:center;padding:30px;
+    }
+    .panel.active{display:flex}
+    .panel .box{
+      width:100%;max-width:720px;border-radius:12px;padding:24px;background:var(--card-dark);
+      box-shadow:0 20px 50px rgba(0,0,0,0.7); color:var(--text-dark);
+    }
+    .panel h2{margin:0 0 8px 0;color:var(--accent)}
+    .panel p{margin:6px 0;color:var(--muted)}
+
+    .close-panel{
+      position:absolute; right:20px; top:20px; background:var(--glass); color:var(--accent);
+      padding:8px 10px;border-radius:10px;border:0; cursor:pointer;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      color: var(--accent);
-      margin-bottom: 5px;
-      animation: glow 3s infinite ease-in-out;
-    }
-
-    @keyframes glow {
-      0%, 100% { text-shadow: 0 0 5px var(--accent); }
-      50% { text-shadow: 0 0 15px var(--accent); }
-    }
-
-    p {
-      margin-top: 0;
-      opacity: 0.9;
-    }
-
-    .link-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      width: 80%;
-      max-width: 400px;
-      margin-top: 10px;
-    }
-
-    .link {
-      background-color: var(--card);
-      color: var(--text);
-      text-decoration: none;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid #222;
-      transition: all 0.2s ease;
-    }
-
-    .link:hover {
-      background-color: var(--hover);
-      transform: scale(1.02);
-    }
-
-    footer {
-      margin-top: 40px;
-      color: #777;
-      font-size: 0.9rem;
-    }
-
-    /* ☰ Menu Button */
-    #menuBtn {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      background: var(--card);
-      color: var(--text);
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 8px 12px;
-      cursor: pointer;
-      z-index: 20;
-    }
-
-    #menuBtn:hover {
-      background-color: var(--hover);
-    }
-
-    /* 🔳 Overlay Menu */
-    #menuOverlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(10, 10, 10, 0.95);
-      backdrop-filter: blur(6px);
-      z-index: 15;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.3s ease;
-    }
-
-    #menuOverlay.active {
-      display: flex;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .menu-item {
-      font-size: 1.3rem;
-      margin: 15px 0;
-      color: var(--text);
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-
-    .menu-item:hover {
-      color: var(--accent);
-    }
-
-    .closeMenu {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: var(--hover);
-      border: none;
-      color: var(--text);
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    /* 🔧 Panel umum */
-    .panel {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      padding: 20px;
-      z-index: 25;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .panel.active {
-      display: flex;
-    }
-
-    .backBtn {
-      background-color: var(--hover);
-      border: none;
-      color: var(--text);
-      padding: 8px 14px;
-      border-radius: 8px;
-      margin-top: 20px;
-      cursor: pointer;
+    /* responsive */
+    @media (max-width:560px){
+      .drawer{right:10px}
+      .drawer.open{width:260px}
+      .card{padding:20px}
     }
   </style>
 </head>
-<body data-theme="dark">
+<body>
 
-  <!-- ☰ Tombol Menu -->
-  <button id="menuBtn">☰</button>
+  <!-- main card -->
+  <div class="card" role="main" aria-label="Azthera links">
+    <h1 class="title">Azthera SMP</h1>
+    <div class="subtitle">Official Links</div>
 
-  <!-- 🔳 Overlay Menu -->
-  <div id="menuOverlay">
-    <button class="closeMenu">✖</button>
-    <div class="menu-item" id="menuHome">🏠 Beranda</div>
-    <div class="menu-item" id="menuStatus">🖥️ Server Status</div>
-    <div class="menu-item" id="menuSettings">⚙️ Settings</div>
+    <div class="links" id="links">
+      <a href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" target="_blank"><span class="emoji">🎥</span> YouTube</a>
+      <a href="https://discord.gg/jfvsWcGpq7" target="_blank"><span class="emoji">🎮</span> Discord</a>
+      <a href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" target="_blank"><span class="emoji">💬</span> WhatsApp</a>
+      <a href="https://www.tiktok.com/@azthera.smp" target="_blank"><span class="emoji">🎵</span> TikTok</a>
+      <a href="https://www.instagram.com/Afn.mc" target="_blank"><span class="emoji">📸</span> Instagram</a>
+    </div>
+
+    <footer>© 2025 Azthera SMP</footer>
   </div>
 
-  <!-- 🔹 Panel Server Status -->
-  <div id="statusPanel" class="panel">
-    <h2>🖥️ Status Server</h2>
-    <p>Server: <strong>mc.noxstore.site:25567</strong></p>
-    <p>Status: <span id="server-status">Checking...</span></p>
-    <p>Player: <span id="player-count">-</span></p>
-    <p>Ping: <span id="ping">-</span></p>
-    <button class="backBtn" id="backFromStatus">⬅️ Kembali</button>
+  <!-- small menu button (for fallback / quick open) -->
+  <button id="menuBtn" aria-label="Open menu">☰</button>
+
+  <!-- right drawer (collapsed by default) -->
+  <div id="drawer" class="drawer" role="navigation" aria-label="Menu drawer">
+    <div id="drawerIcon" class="icon-btn" title="Menu">≡</div>
+    <div class="drawer-title" id="drawerTitle">Azthera SMP</div>
+
+    <!-- NOTE: menu items visible when drawer opens -->
+    <div id="drawerItems" style="width:100%;margin-top:8px;display:none">
+      <button class="menu-item" id="openStatusBtn">🖥️ Server Status</button>
+      <button class="menu-item" id="openSettingsBtn">⚙️ Settings</button>
+      <button class="menu-item" id="closeDrawerBtn" style="color:var(--muted)">✖ Tutup</button>
+    </div>
   </div>
 
-  <!-- ⚙️ Panel Settings -->
-  <div id="settingsPanel" class="panel">
-    <h2>⚙️ Pengaturan</h2>
-    <button id="toggleTheme" class="backBtn">🌙 Ganti Tema</button>
-    <button class="backBtn" id="backFromSettings">⬅️ Kembali</button>
+  <!-- Server Status Panel (fullscreen) -->
+  <div id="statusPanel" class="panel" aria-hidden="true">
+    <button class="close-panel" id="closeStatusPanel">✕</button>
+    <div class="box">
+      <h2>Server Status</h2>
+      <p><strong>mc.noxstore.site:25567</strong></p>
+      <p>Status: <span id="serverState">Checking...</span></p>
+      <p>Players: <span id="serverPlayers">-</span></p>
+      <p>Ping: <span id="serverPing">-</span></p>
+      <div style="margin-top:14px">
+        <button id="refreshStatus" style="background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:0;cursor:pointer">Refresh</button>
+      </div>
+    </div>
   </div>
 
-  <!-- 🌍 Halaman Utama -->
-  <h1>Azthera SMP</h1>
-  <p>Welcome to the Official Links</p>
+  <!-- Settings Panel (fullscreen) -->
+  <div id="settingsPanel" class="panel" aria-hidden="true">
+    <button class="close-panel" id="closeSettingsPanel">✕</button>
+    <div class="box" style="text-align:left">
+      <h2>Settings</h2>
+      <p style="color:var(--muted)">Tema</p>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
+        <button id="themeDark" style="flex:1;padding:10px;border-radius:8px;border:0;background:var(--card-dark);color:var(--text-dark);cursor:pointer">Dark</button>
+        <button id="themeLight" style="flex:1;padding:10px;border-radius:8px;border:0;background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04);cursor:pointer">Light</button>
+      </div>
 
-  <div class="link-container">
-    <a href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" class="link">🎥 YouTube</a>
-    <a href="https://discord.gg/jfvsWcGpq7" class="link">💬 Discord</a>
-    <a href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" class="link">📱 WhatsApp</a>
-    <a href="https://www.tiktok.com/@azthera.smp" class="link">🎵 TikTok</a>
-    <a href="https://www.instagram.com/Afn.mc" class="link">📸 Instagram</a>
+      <hr style="margin:16px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)">
+
+      <p style="color:var(--muted)">Lainnya</p>
+      <button id="copyIP" style="margin-top:8px;padding:10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer">Salin alamat server</button>
+    </div>
   </div>
-
-  <footer>© 2025 Azthera SMP</footer>
 
   <script>
-    const menuBtn = document.getElementById("menuBtn");
-    const menuOverlay = document.getElementById("menuOverlay");
-    const closeMenu = document.querySelector(".closeMenu");
+    // Elements
+    const menuBtn = document.getElementById('menuBtn');
+    const drawer = document.getElementById('drawer');
+    const drawerIcon = document.getElementById('drawerIcon');
+    const drawerTitle = document.getElementById('drawerTitle');
+    const drawerItems = document.getElementById('drawerItems');
+    const openStatusBtn = document.getElementById('openStatusBtn');
+    const openSettingsBtn = document.getElementById('openSettingsBtn');
+    const closeDrawerBtn = document.getElementById('closeDrawerBtn');
 
-    const statusPanel = document.getElementById("statusPanel");
-    const settingsPanel = document.getElementById("settingsPanel");
+    const statusPanel = document.getElementById('statusPanel');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const closeStatusPanel = document.getElementById('closeStatusPanel');
+    const closeSettingsPanel = document.getElementById('closeSettingsPanel');
+    const refreshStatus = document.getElementById('refreshStatus');
 
-    const backFromStatus = document.getElementById("backFromStatus");
-    const backFromSettings = document.getElementById("backFromSettings");
-    const toggleTheme = document.getElementById("toggleTheme");
+    const serverState = document.getElementById('serverState');
+    const serverPlayers = document.getElementById('serverPlayers');
+    const serverPing = document.getElementById('serverPing');
 
-    const SERVER_HOST = "mc.noxstore.site";
-    const SERVER_PORT = "25567";
-    const statusEl = document.getElementById("server-status");
-    const playerEl = document.getElementById("player-count");
-    const pingEl = document.getElementById("ping");
+    const themeDark = document.getElementById('themeDark');
+    const themeLight = document.getElementById('themeLight');
+    const copyIP = document.getElementById('copyIP');
 
-    // 🌐 Fetch status server
-    async function fetchStatus() {
-      const start = performance.now();
-      statusEl.textContent = "Checking...";
+    const SERVER = 'mc.noxstore.site';
+    const PORT = '25567';
+
+    // Drawer open/close logic
+    let drawerOpen = false;
+    function openDrawer(){
+      drawer.classList.add('open');
+      drawerItems.style.display = 'block';
+      drawerOpen = true;
+    }
+    function closeDrawer(){
+      drawer.classList.remove('open');
+      drawerItems.style.display = 'none';
+      drawerOpen = false;
+    }
+
+    // clicking menu button -> toggle drawer (small)
+    menuBtn.addEventListener('click', ()=>{
+      if(drawerOpen) closeDrawer(); else openDrawer();
+    });
+
+    // clicking drawer icon also toggles
+    drawerIcon.addEventListener('click', ()=>{
+      if(drawerOpen) closeDrawer(); else openDrawer();
+    });
+
+    // close button inside drawer
+    closeDrawerBtn.addEventListener('click', closeDrawer);
+
+    // When choosing menu item: close drawer then open full panel
+    openStatusBtn.addEventListener('click', ()=>{
+      closeDrawer();
+      openStatusPanel();
+    });
+    openSettingsBtn.addEventListener('click', ()=>{
+      closeDrawer();
+      openSettingsPanel();
+    });
+
+    // panel controls
+    function openStatusPanel(){
+      statusPanel.classList.add('active');
+      statusPanel.setAttribute('aria-hidden','false');
+      fetchServerStatus(); // fetch immediately
+    }
+    function closeStatusPanelFn(){
+      statusPanel.classList.remove('active');
+      statusPanel.setAttribute('aria-hidden','true');
+    }
+    function openSettingsPanel(){
+      settingsPanel.classList.add('active');
+      settingsPanel.setAttribute('aria-hidden','false');
+    }
+    function closeSettingsPanelFn(){
+      settingsPanel.classList.remove('active');
+      settingsPanel.setAttribute('aria-hidden','true');
+    }
+
+    closeStatusPanel.addEventListener('click', closeStatusPanelFn);
+    closeSettingsPanel.addEventListener('click', closeSettingsPanelFn);
+
+    // copy server ip
+    copyIP.addEventListener('click', ()=>{
+      const addr = `${SERVER}:${PORT}`;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(addr).then(()=> {
+          copyIP.textContent = 'Tersalin!';
+          setTimeout(()=> copyIP.textContent = 'Salin alamat server', 1200);
+        });
+      }
+    });
+
+    // theme buttons
+    function applyTheme(t){
+      document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+      localStorage.setItem('az_theme', t);
+    }
+    themeDark.addEventListener('click', ()=> applyTheme('dark'));
+    themeLight.addEventListener('click', ()=> applyTheme('light'));
+    // init theme from storage or prefer
+    const saved = localStorage.getItem('az_theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'dark');
+    applyTheme(saved);
+
+    // server status fetch (TrueMS)
+    async function fetchServerStatus(){
+      serverState.textContent = 'Checking...';
+      serverPlayers.textContent = '-';
+      serverPing.textContent = '-';
       try {
-        const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SERVER_HOST}:${SERVER_PORT}`);
-        const end = performance.now();
-        const truePing = Math.round(end - start);
+        const url = `https://api.mcstatus.io/v2/status/java/${SERVER}:${PORT}`;
+        const t0 = performance.now();
+        const res = await fetch(url, {cache:'no-store'});
+        const t1 = performance.now();
         const data = await res.json();
+        const truePing = Math.round(t1 - t0);
 
-        if (data.online) {
-          statusEl.textContent = "🟢 Online";
-          playerEl.textContent = `${data.players.online}/${data.players.max}`;
-          pingEl.textContent = `${truePing} ms`;
+        if(data && data.online){
+          serverState.textContent = '🟢 Online';
+          serverPlayers.textContent = `${data.players?.online ?? 0}/${data.players?.max ?? '?'}`;
+          serverPing.textContent = `${truePing} ms`;
         } else {
-          statusEl.textContent = "🔴 Offline";
-          playerEl.textContent = "0";
-          pingEl.textContent = "-";
+          serverState.textContent = '🔴 Offline';
+          serverPlayers.textContent = '0';
+          serverPing.textContent = '-';
         }
-      } catch (e) {
-        statusEl.textContent = "⚪ Error";
+      } catch(e){
+        serverState.textContent = '⚪ Error';
+        serverPlayers.textContent = '-';
+        serverPing.textContent = '-';
       }
     }
 
-    // ☰ Menu control
-    menuBtn.onclick = () => menuOverlay.classList.add("active");
-    closeMenu.onclick = () => menuOverlay.classList.remove("active");
+    // refresh button
+    refreshStatus.addEventListener('click', fetchServerStatus);
 
-    document.getElementById("menuHome").onclick = () => {
-      menuOverlay.classList.remove("active");
-    };
+    // auto-refresh while panel open (every 10s)
+    let statusInterval = null;
+    const obs = new MutationObserver(()=> {
+      if(statusPanel.classList.contains('active')){
+        // start interval
+        if(!statusInterval) statusInterval = setInterval(fetchServerStatus, 10000);
+      } else {
+        if(statusInterval){ clearInterval(statusInterval); statusInterval = null; }
+      }
+    });
+    obs.observe(statusPanel, { attributes:true, attributeFilter:['class'] });
 
-    document.getElementById("menuStatus").onclick = () => {
-      menuOverlay.classList.remove("active");
-      statusPanel.classList.add("active");
-      fetchStatus();
-    };
+    // close drawer if clicked outside (on body)
+    document.addEventListener('click', (e)=>{
+      if(drawerOpen){
+        const inside = drawer.contains(e.target) || menuBtn.contains(e.target);
+        if(!inside) closeDrawer();
+      }
+    });
 
-    document.getElementById("menuSettings").onclick = () => {
-      menuOverlay.classList.remove("active");
-      settingsPanel.classList.add("active");
-    };
-
-    backFromStatus.onclick = () => statusPanel.classList.remove("active");
-    backFromSettings.onclick = () => settingsPanel.classList.remove("active");
-
-    // 🌙 Tema toggle
-    toggleTheme.onclick = () => {
-      const current = document.body.getAttribute("data-theme");
-      const newTheme = current === "dark" ? "light" : "dark";
-      document.body.setAttribute("data-theme", newTheme);
-      toggleTheme.textContent = newTheme === "dark" ? "🌙 Ganti Tema" : "☀️ Ganti Tema";
-    };
+    // keyboard ESC to close panels/drawer
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){
+        if(statusPanel.classList.contains('active')) closeStatusPanelFn();
+        if(settingsPanel.classList.contains('active')) closeSettingsPanelFn();
+        if(drawerOpen) closeDrawer();
+      }
+    });
   </script>
 </body>
 </html>

@@ -5,316 +5,375 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Azthera SMP</title>
   <style>
+    /* ---------- Variables ---------- */
     :root{
-      --bg-dark: #070707;
-      --card-dark: #121215;
-      --text-dark: #e9eef6;
-      --accent: #3da9fc; /* soft blue */
-      --muted: #9aa6b2;
+      --bg-dark: #060609;        /* main bg (dark) */
+      --panel-dark: #0f1114;    /* card / panel */
+      --muted-dark: #9aa6b2;
+      --accent-blue: #3da9fc;   /* soft blue */
       --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.02);
+      --glass-strong: rgba(61,169,252,0.06);
     }
     [data-theme="light"]{
-      --bg-dark: #f6f8fb;
-      --card-dark: #ffffff;
-      --text-dark: #0b0b0b;
-      --accent: #2b7cff;
-      --muted: #56606b;
+      --bg-dark: #eef3f8;       /* light bg (keeps futuristic vibe) */
+      --panel-dark: #ffffff;
+      --muted-dark: #4d5862;
+      --accent-blue: #2b7cff;
       --glass: rgba(0,0,0,0.03);
+      --glass-2: rgba(0,0,0,0.02);
+      --glass-strong: rgba(43,124,255,0.06);
     }
 
+    /* ---------- Base ---------- */
     *{box-sizing:border-box}
     html,body{height:100%;margin:0;font-family:Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial;}
     body{
-      background:var(--bg-dark);
-      color:var(--text-dark);
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(61,169,252,0.03), transparent 6%),
+                  linear-gradient(180deg, var(--bg-dark), rgba(0,0,0,0.02) 100%);
+      color: var(--muted-dark);
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:28px 20px;
-      transition:background .25s,color .25s;
+      padding:28px 16px;
+      transition: background .35s ease, color .25s ease;
       -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    /* Main card (linktree style) */
+    /* ---------- Main card (linktree style) ---------- */
     .card{
       width:100%;
-      max-width:460px;
-      background:linear-gradient(180deg,var(--card-dark),rgba(255,255,255,0.02));
-      border-radius:16px;
+      max-width:480px;
+      border-radius:14px;
       padding:28px;
-      box-shadow:0 8px 30px rgba(0,0,0,0.6);
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03));
+      backdrop-filter: blur(6px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
       text-align:center;
       position:relative;
       overflow:hidden;
     }
 
-    .title{
-      margin:0 0 6px 0;
-      font-size:1.6rem;
+    .title {
+      margin:0;
+      font-size:1.7rem;
       font-weight:700;
-      color:var(--accent);
-      text-shadow:0 0 8px rgba(61,169,252,0.06);
+      color:var(--accent-blue);
+      letter-spacing:0.2px;
     }
-    .subtitle{margin:0;color:var(--muted);font-size:0.95rem;margin-bottom:18px}
+    .subtitle { margin:6px 0 14px 0; color:var(--muted-dark); font-size:0.95rem; }
 
-    .links{display:flex;flex-direction:column;gap:12px}
+    .links { display:flex; flex-direction:column; gap:12px; margin-top:6px; }
     .links a{
-      display:block;padding:12px 16px;border-radius:12px;
-      background:var(--bg-dark); color:var(--text-dark);
-      text-decoration:none;border:1px solid rgba(255,255,255,0.03);
-      font-weight:600;transition:transform .14s ease, box-shadow .14s;
+      display:block;
+      padding:14px 16px;
+      border-radius:12px;
+      text-decoration:none;
+      color:inherit;
+      font-weight:700;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+      border:1px solid rgba(255,255,255,0.03);
+      transition: transform .14s ease, box-shadow .14s ease, background .2s;
     }
-    .links a:hover{transform:translateY(-4px); box-shadow:0 14px 30px rgba(0,0,0,0.45)}
-    .links a .emoji{margin-right:8px}
-
-    footer{margin-top:18px;color:var(--muted);font-size:0.85rem}
-
-    /* menu button (hamburger) top-right fixed) */
-    #menuBtn{
-      position:fixed; right:18px; top:18px;
-      background:var(--card-dark); color:var(--accent);
-      border:1px solid rgba(255,255,255,0.02);
-      padding:8px 10px;border-radius:10px; cursor:pointer; z-index:50;
-      box-shadow:0 6px 18px rgba(0,0,0,0.6);
+    .links a .emoji{ margin-right:8px }
+    .links a:hover{
+      transform: translateY(-6px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
     }
-    #menuBtn:hover{transform:scale(1.03)}
 
-    /* right side drawer (thin) */
-    .drawer{
+    footer{ margin-top:18px; color:var(--muted-dark); font-size:0.85rem }
+
+    /* ---------- Mini hamburger (top-right) ---------- */
+    #hamburger {
+      position:fixed;
+      right:16px;
+      top:16px;
+      background:var(--panel-dark);
+      color:var(--accent-blue);
+      border-radius:10px;
+      padding:8px 10px;
+      border:1px solid var(--glass-2);
+      cursor:pointer;
+      z-index:80;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.55);
+      transition: transform .16s;
+    }
+    #hamburger:hover{ transform: scale(1.02) }
+
+    /* ---------- Right mini-drawer (icon-only vertical strip) ---------- */
+    .mini-drawer {
       position:fixed;
       right:12px;
       top:50%;
-      transform:translateY(-50%);
-      width:64px;
-      background:var(--card-dark);
+      transform: translateY(-50%);
+      width:56px;            /* collapsed width (icon-only) */
+      height:auto;
+      background: var(--panel-dark);
       border-radius:999px;
-      padding:10px;
+      padding:10px 6px;
       display:flex;
       flex-direction:column;
-      gap:8px;
+      gap:10px;
       align-items:center;
-      z-index:45;
-      box-shadow:0 10px 30px rgba(0,0,0,0.5);
-      transition:width .28s ease, background .28s;
+      z-index:70;
+      box-shadow:0 18px 40px rgba(0,0,0,0.6);
+      transition: width .28s ease, border-radius .28s ease, padding .28s ease;
       overflow:hidden;
     }
-    .drawer.open{width:320px;border-radius:12px;padding:18px 16px}
-    .drawer .drawer-title{color:var(--accent);font-weight:700;margin-bottom:6px;opacity:0;transition:opacity .2s}
-    .drawer.open .drawer-title{opacity:1}
-    .drawer .icon-btn{
-      width:44px;height:44px;border-radius:10px;background:var(--glass);
-      display:flex;align-items:center;justify-content:center;color:var(--accent);cursor:pointer;
-      border:1px solid rgba(255,255,255,0.02);
+    .mini-drawer.open {
+      width:82px; /* slightly wider so icons feel comfortable */
+      border-radius:12px;
+      padding:12px;
     }
-    .drawer .menu-item{
-      display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;cursor:pointer;color:var(--text-dark);
-      width:100%;background:transparent;border:none;text-align:left;font-weight:600;
-    }
-    .drawer .menu-item:hover{background:rgba(255,255,255,0.02); color:var(--accent)}
 
-    /* full panel (content opened after selecting) */
-    .panel{
-      position:fixed; inset:0; display:none; z-index:60;
-      background:linear-gradient(180deg, rgba(0,0,0,0.72), rgba(0,0,0,0.88));
-      align-items:center;justify-content:center;padding:30px;
+    .mini-btn {
+      width:44px; height:44px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      background:transparent; border:1px solid var(--glass-2);
+      color:var(--accent-blue); cursor:pointer; font-size:18px;
+      transition: background .16s, transform .12s;
     }
-    .panel.active{display:flex}
-    .panel .box{
-      width:100%;max-width:720px;border-radius:12px;padding:24px;background:var(--card-dark);
-      box-shadow:0 20px 50px rgba(0,0,0,0.7); color:var(--text-dark);
-    }
-    .panel h2{margin:0 0 8px 0;color:var(--accent)}
-    .panel p{margin:6px 0;color:var(--muted)}
+    .mini-btn:hover { background: var(--glass); transform: translateY(-4px) }
 
-    .close-panel{
-      position:absolute; right:20px; top:20px; background:var(--glass); color:var(--accent);
-      padding:8px 10px;border-radius:10px;border:0; cursor:pointer;
+    /* tiny label shown only when drawer open (we keep it minimal but user asked no text; we will keep hidden) */
+    .mini-drawer .label { display:none; font-size:12px; color:var(--muted-dark); margin-top:6px }
+
+    /* ---------- Full panels (appear after selecting icon) ---------- */
+    .panel {
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg, rgba(2,6,23,0.75), rgba(2,6,23,0.88));
+      z-index:200;
+      padding:26px;
+      animation: panelIn .28s ease;
     }
+    .panel.active { display:flex }
+
+    @keyframes panelIn {
+      from { opacity:0; transform: translateY(8px) scale(.995) }
+      to { opacity:1; transform: translateY(0) scale(1) }
+    }
+
+    .panel .box {
+      width:100%;
+      max-width:720px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
+      border-radius:12px;
+      padding:22px;
+      color:var(--muted-dark);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+      text-align:left;
+    }
+    .panel h2 { margin:0 0 8px; color:var(--accent-blue); font-size:1.25rem }
+    .panel p { margin:6px 0; color:var(--muted-dark) }
+
+    .panel .close {
+      position:absolute; right:20px; top:20px;
+      background:transparent; border:1px solid var(--glass-2); color:var(--accent-blue);
+      padding:8px 10px;border-radius:10px; cursor:pointer;
+    }
+
+    /* buttons inside panel */
+    .btn {
+      padding:10px 14px; border-radius:10px; border:0; cursor:pointer;
+      background:var(--accent-blue); color:#fff; font-weight:700;
+    }
+    .muted { background:transparent; border:1px solid var(--glass-2); color:var(--muted-dark) }
 
     /* responsive */
-    @media (max-width:560px){
-      .drawer{right:10px}
-      .drawer.open{width:260px}
-      .card{padding:20px}
+    @media (max-width:520px){
+      .mini-drawer { right:8px; width:52px }
+      .mini-drawer.open { width:72px }
+      .card { padding:18px }
     }
   </style>
 </head>
 <body>
 
   <!-- main card -->
-  <div class="card" role="main" aria-label="Azthera links">
+  <main class="card" role="main" aria-label="Azthera links">
     <h1 class="title">Azthera SMP</h1>
-    <div class="subtitle">Official Links</div>
+    <div class="subtitle">Selamat datang — official links</div>
 
-    <div class="links" id="links">
-      <a href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" target="_blank"><span class="emoji">🎥</span> YouTube</a>
-      <a href="https://discord.gg/jfvsWcGpq7" target="_blank"><span class="emoji">🎮</span> Discord</a>
-      <a href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" target="_blank"><span class="emoji">💬</span> WhatsApp</a>
-      <a href="https://www.tiktok.com/@azthera.smp" target="_blank"><span class="emoji">🎵</span> TikTok</a>
-      <a href="https://www.instagram.com/Afn.mc" target="_blank"><span class="emoji">📸</span> Instagram</a>
-    </div>
+    <nav class="links" aria-label="Links">
+      <a class="link" href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" target="_blank"><span class="emoji">🎥</span> YouTube</a>
+      <a class="link" href="https://discord.gg/jfvsWcGpq7" target="_blank"><span class="emoji">🎮</span> Discord</a>
+      <a class="link" href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" target="_blank"><span class="emoji">💬</span> WhatsApp</a>
+      <a class="link" href="https://www.tiktok.com/@azthera.smp" target="_blank"><span class="emoji">🎵</span> TikTok</a>
+      <a class="link" href="https://www.instagram.com/Afn.mc" target="_blank"><span class="emoji">📸</span> Instagram</a>
+    </nav>
 
     <footer>© 2025 Azthera SMP</footer>
-  </div>
+  </main>
 
-  <!-- small menu button (for fallback / quick open) -->
-  <button id="menuBtn" aria-label="Open menu">☰</button>
+  <!-- hamburger quick access (also toggles drawer) -->
+  <button id="hamburger" aria-label="Open menu">☰</button>
 
-  <!-- right drawer (collapsed by default) -->
-  <div id="drawer" class="drawer" role="navigation" aria-label="Menu drawer">
-    <div id="drawerIcon" class="icon-btn" title="Menu">≡</div>
-    <div class="drawer-title" id="drawerTitle">Azthera SMP</div>
+  <!-- mini drawer (icon-only vertical strip) -->
+  <aside id="drawer" class="mini-drawer" role="navigation" aria-label="Sidebar menu">
+    <button id="drawerToggle" class="mini-btn" aria-label="Toggle drawer">≡</button>
+    <!-- icons only (no text) -->
+    <button id="homeBtn" class="mini-btn" title="Home" aria-label="Home">🏠</button>
+    <button id="statusBtn" class="mini-btn" title="Status" aria-label="Status">📊</button>
+    <button id="settingsBtn" class="mini-btn" title="Settings" aria-label="Settings">⚙️</button>
+  </aside>
 
-    <!-- NOTE: menu items visible when drawer opens -->
-    <div id="drawerItems" style="width:100%;margin-top:8px;display:none">
-      <button class="menu-item" id="openStatusBtn">🖥️ Server Status</button>
-      <button class="menu-item" id="openSettingsBtn">⚙️ Settings</button>
-      <button class="menu-item" id="closeDrawerBtn" style="color:var(--muted)">✖ Tutup</button>
-    </div>
-  </div>
-
-  <!-- Server Status Panel (fullscreen) -->
-  <div id="statusPanel" class="panel" aria-hidden="true">
-    <button class="close-panel" id="closeStatusPanel">✕</button>
+  <!-- Panel: Home (full background) -->
+  <section id="homePanel" class="panel" aria-hidden="true">
+    <button class="close" id="closeHome">✕</button>
     <div class="box">
-      <h2>Server Status</h2>
-      <p><strong>mc.noxstore.site:25567</strong></p>
-      <p>Status: <span id="serverState">Checking...</span></p>
-      <p>Players: <span id="serverPlayers">-</span></p>
-      <p>Ping: <span id="serverPing">-</span></p>
-      <div style="margin-top:14px">
-        <button id="refreshStatus" style="background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:0;cursor:pointer">Refresh</button>
+      <h2>Selamat datang di Azthera SMP</h2>
+      <p>Halo! Selamat datang di halaman resmi Azthera SMP. Di sini ada link resmi komunitas — Discord, WhatsApp, TikTok, Instagram, dan YouTube.</p>
+      <p style="margin-top:12px;color:var(--muted-dark)">Gunakan menu di kanan untuk cek status server atau ubah pengaturan.</p>
+    </div>
+  </section>
+
+  <!-- Panel: Status -->
+  <section id="statusPanel" class="panel" aria-hidden="true">
+    <button class="close" id="closeStatus">✕</button>
+    <div class="box">
+      <h2>Status Server</h2>
+      <p><strong>Alamat:</strong> mc.noxstore.site:25567</p>
+      <p><strong>Status:</strong> <span id="serverState">Checking...</span></p>
+      <p><strong>Players:</strong> <span id="serverPlayers">-</span></p>
+      <p><strong>Ping (TrueMS):</strong> <span id="serverPing">-</span></p>
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <button id="refreshBtn" class="btn">Refresh</button>
+        <button id="closeStatusBtn" class="muted">Tutup</button>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Settings Panel (fullscreen) -->
-  <div id="settingsPanel" class="panel" aria-hidden="true">
-    <button class="close-panel" id="closeSettingsPanel">✕</button>
-    <div class="box" style="text-align:left">
-      <h2>Settings</h2>
-      <p style="color:var(--muted)">Tema</p>
-      <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
-        <button id="themeDark" style="flex:1;padding:10px;border-radius:8px;border:0;background:var(--card-dark);color:var(--text-dark);cursor:pointer">Dark</button>
-        <button id="themeLight" style="flex:1;padding:10px;border-radius:8px;border:0;background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04);cursor:pointer">Light</button>
+  <!-- Panel: Settings -->
+  <section id="settingsPanel" class="panel" aria-hidden="true">
+    <button class="close" id="closeSettings">✕</button>
+    <div class="box">
+      <h2>Pengaturan</h2>
+      <p style="color:var(--muted-dark)">Tema</p>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button id="themeDark" class="btn" style="flex:1">Dark</button>
+        <button id="themeLight" class="muted" style="flex:1">Light</button>
       </div>
 
-      <hr style="margin:16px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)">
+      <hr style="margin:14px 0;border:0;border-top:1px solid rgba(255,255,255,0.03)">
 
-      <p style="color:var(--muted)">Lainnya</p>
-      <button id="copyIP" style="margin-top:8px;padding:10px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer">Salin alamat server</button>
+      <p style="color:var(--muted-dark)">Aksi</p>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button id="copyAddr" class="btn" style="flex:1">Salin Alamat Server</button>
+        <button id="aboutBtn" class="muted" style="flex:1">Tentang</button>
+      </div>
     </div>
-  </div>
+  </section>
 
   <script>
-    // Elements
-    const menuBtn = document.getElementById('menuBtn');
+    /* ---------- Elements ---------- */
+    const hamburger = document.getElementById('hamburger');
     const drawer = document.getElementById('drawer');
-    const drawerIcon = document.getElementById('drawerIcon');
-    const drawerTitle = document.getElementById('drawerTitle');
-    const drawerItems = document.getElementById('drawerItems');
-    const openStatusBtn = document.getElementById('openStatusBtn');
-    const openSettingsBtn = document.getElementById('openSettingsBtn');
-    const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+    const drawerToggle = document.getElementById('drawerToggle');
+    const homeBtn = document.getElementById('homeBtn');
+    const statusBtn = document.getElementById('statusBtn');
+    const settingsBtn = document.getElementById('settingsBtn');
 
+    const homePanel = document.getElementById('homePanel');
     const statusPanel = document.getElementById('statusPanel');
     const settingsPanel = document.getElementById('settingsPanel');
-    const closeStatusPanel = document.getElementById('closeStatusPanel');
-    const closeSettingsPanel = document.getElementById('closeSettingsPanel');
-    const refreshStatus = document.getElementById('refreshStatus');
 
+    const closeHome = document.getElementById('closeHome');
+    const closeStatus = document.getElementById('closeStatus');
+    const closeSettings = document.getElementById('closeSettings');
+
+    const closeStatusBtn = document.getElementById('closeStatusBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
     const serverState = document.getElementById('serverState');
     const serverPlayers = document.getElementById('serverPlayers');
     const serverPing = document.getElementById('serverPing');
 
     const themeDark = document.getElementById('themeDark');
     const themeLight = document.getElementById('themeLight');
-    const copyIP = document.getElementById('copyIP');
+    const copyAddr = document.getElementById('copyAddr');
+    const aboutBtn = document.getElementById('aboutBtn');
 
     const SERVER = 'mc.noxstore.site';
     const PORT = '25567';
 
-    // Drawer open/close logic
+    /* ---------- Drawer logic ---------- */
     let drawerOpen = false;
     function openDrawer(){
       drawer.classList.add('open');
-      drawerItems.style.display = 'block';
       drawerOpen = true;
+      // show tiny labels? user wanted no text, so we keep icons only
     }
     function closeDrawer(){
       drawer.classList.remove('open');
-      drawerItems.style.display = 'none';
       drawerOpen = false;
     }
+    // toggle by hamburger or drawerToggle
+    hamburger.addEventListener('click', ()=> drawerOpen ? closeDrawer() : openDrawer());
+    drawerToggle.addEventListener('click', ()=> drawerOpen ? closeDrawer() : openDrawer());
 
-    // clicking menu button -> toggle drawer (small)
-    menuBtn.addEventListener('click', ()=>{
-      if(drawerOpen) closeDrawer(); else openDrawer();
-    });
-
-    // clicking drawer icon also toggles
-    drawerIcon.addEventListener('click', ()=>{
-      if(drawerOpen) closeDrawer(); else openDrawer();
-    });
-
-    // close button inside drawer
-    closeDrawerBtn.addEventListener('click', closeDrawer);
-
-    // When choosing menu item: close drawer then open full panel
-    openStatusBtn.addEventListener('click', ()=>{
-      closeDrawer();
-      openStatusPanel();
-    });
-    openSettingsBtn.addEventListener('click', ()=>{
-      closeDrawer();
-      openSettingsPanel();
-    });
-
-    // panel controls
-    function openStatusPanel(){
-      statusPanel.classList.add('active');
-      statusPanel.setAttribute('aria-hidden','false');
-      fetchServerStatus(); // fetch immediately
-    }
-    function closeStatusPanelFn(){
-      statusPanel.classList.remove('active');
-      statusPanel.setAttribute('aria-hidden','true');
-    }
-    function openSettingsPanel(){
-      settingsPanel.classList.add('active');
-      settingsPanel.setAttribute('aria-hidden','false');
-    }
-    function closeSettingsPanelFn(){
-      settingsPanel.classList.remove('active');
-      settingsPanel.setAttribute('aria-hidden','true');
-    }
-
-    closeStatusPanel.addEventListener('click', closeStatusPanelFn);
-    closeSettingsPanel.addEventListener('click', closeSettingsPanelFn);
-
-    // copy server ip
-    copyIP.addEventListener('click', ()=>{
-      const addr = `${SERVER}:${PORT}`;
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(addr).then(()=> {
-          copyIP.textContent = 'Tersalin!';
-          setTimeout(()=> copyIP.textContent = 'Salin alamat server', 1200);
-        });
+    // close drawer when clicking outside
+    document.addEventListener('click', (e)=>{
+      if(drawerOpen){
+        if(!drawer.contains(e.target) && !hamburger.contains(e.target)){
+          closeDrawer();
+        }
       }
     });
 
-    // theme buttons
+    /* ---------- Panels open (icon click) ---------- */
+    function openPanel(panel){
+      // close drawer first (per spec)
+      closeDrawer();
+      // close any other panel
+      [homePanel, statusPanel, settingsPanel].forEach(p => p.classList.remove('active'));
+      // open requested
+      panel.classList.add('active');
+      panel.setAttribute('aria-hidden','false');
+      // if status, fetch immediately
+      if(panel === statusPanel) fetchServerStatus();
+    }
+    function closePanel(panel){
+      panel.classList.remove('active');
+      panel.setAttribute('aria-hidden','true');
+    }
+
+    homeBtn.addEventListener('click', ()=> openPanel(homePanel));
+    statusBtn.addEventListener('click', ()=> openPanel(statusPanel));
+    settingsBtn.addEventListener('click', ()=> openPanel(settingsPanel));
+
+    closeHome.addEventListener('click', ()=> closePanel(homePanel));
+    closeStatus.addEventListener('click', ()=> closePanel(statusPanel));
+    closeSettings.addEventListener('click', ()=> closePanel(settingsPanel));
+    closeStatusBtn.addEventListener('click', ()=> closePanel(statusPanel));
+
+    /* close panels with Escape key */
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){
+        [homePanel, statusPanel, settingsPanel].forEach(p=> p.classList.remove('active'));
+        closeDrawer();
+      }
+    });
+
+    /* ---------- Theme (persist) ---------- */
     function applyTheme(t){
-      document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+      if(t === 'light'){
+        document.documentElement.setAttribute('data-theme','light');
+      } else {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
       localStorage.setItem('az_theme', t);
     }
     themeDark.addEventListener('click', ()=> applyTheme('dark'));
     themeLight.addEventListener('click', ()=> applyTheme('light'));
-    // init theme from storage or prefer
-    const saved = localStorage.getItem('az_theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'dark');
-    applyTheme(saved);
+    // init theme: prefer saved or dark default
+    const savedTheme = localStorage.getItem('az_theme') || 'dark';
+    applyTheme(savedTheme);
 
-    // server status fetch (TrueMS)
+    /* ---------- Server status fetch (TrueMS) ---------- */
     async function fetchServerStatus(){
       serverState.textContent = 'Checking...';
       serverPlayers.textContent = '-';
@@ -336,44 +395,43 @@
           serverPlayers.textContent = '0';
           serverPing.textContent = '-';
         }
-      } catch(e){
+      } catch(err){
         serverState.textContent = '⚪ Error';
         serverPlayers.textContent = '-';
         serverPing.textContent = '-';
       }
     }
+    refreshBtn.addEventListener('click', fetchServerStatus);
 
-    // refresh button
-    refreshStatus.addEventListener('click', fetchServerStatus);
-
-    // auto-refresh while panel open (every 10s)
+    // auto-refresh while statusPanel is open: start interval when open
     let statusInterval = null;
-    const obs = new MutationObserver(()=> {
+    const observer = new MutationObserver(()=> {
       if(statusPanel.classList.contains('active')){
-        // start interval
         if(!statusInterval) statusInterval = setInterval(fetchServerStatus, 10000);
       } else {
         if(statusInterval){ clearInterval(statusInterval); statusInterval = null; }
       }
     });
-    obs.observe(statusPanel, { attributes:true, attributeFilter:['class'] });
+    observer.observe(statusPanel, { attributes: true, attributeFilter: ['class'] });
 
-    // close drawer if clicked outside (on body)
-    document.addEventListener('click', (e)=>{
-      if(drawerOpen){
-        const inside = drawer.contains(e.target) || menuBtn.contains(e.target);
-        if(!inside) closeDrawer();
+    /* ---------- Copy address & about ---------- */
+    copyAddr.addEventListener('click', ()=>{
+      const addr = `${SERVER}:${PORT}`;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(addr).then(()=> {
+          copyAddr.textContent = 'Tersalin!';
+          setTimeout(()=> copyAddr.textContent = 'Salin Alamat Server', 1400);
+        });
+      } else {
+        alert(addr);
       }
     });
+    aboutBtn.addEventListener('click', ()=> alert('Azthera SMP — komunitas server. Dibuat oleh tim Azthera.'));
 
-    // keyboard ESC to close panels/drawer
-    document.addEventListener('keydown', (e)=>{
-      if(e.key === 'Escape'){
-        if(statusPanel.classList.contains('active')) closeStatusPanelFn();
-        if(settingsPanel.classList.contains('active')) closeSettingsPanelFn();
-        if(drawerOpen) closeDrawer();
-      }
-    });
+    /* ---------- Accessibility: focus trap minimal for panel (optional lightweight) ---------- */
+    // no heavy focus trap to keep simple; panels closable by ESC and close button
+
+    /* ---------- Init: nothing else ---------- */
   </script>
 </body>
-</html>
+          </html>

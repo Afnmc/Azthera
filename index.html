@@ -1,243 +1,306 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Azthera SMP</title>
   <style>
     :root {
-      --bg-dark: #050505;
-      --bg-light: #f5f5f5;
-      --text-dark: #ffffff;
-      --text-light: #0a0a0a;
-      --accent: #00b4d8;
-      --card: #111;
+      --bg: #0b0c0f;
+      --card: #15171b;
+      --text: #e0e0e0;
+      --accent: #3399ff;
+      --hover: #3399ff30;
+    }
+
+    [data-theme="light"] {
+      --bg: #f4f7fa;
+      --card: #ffffff;
+      --text: #0b0c0f;
+      --accent: #2979ff;
+      --hover: #2979ff20;
+    }
+
+    * {
+      transition: background-color 0.3s, color 0.3s;
     }
 
     body {
+      background-color: var(--bg);
+      color: var(--text);
       margin: 0;
-      font-family: "Poppins", sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-dark);
-      transition: background 0.5s, color 0.5s;
-      overflow-x: hidden;
-    }
-
-    [data-theme="light"] body {
-      background: var(--bg-light);
-      color: var(--text-light);
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 1.4rem;
-    }
-
-    .menu-btn {
-      font-size: 1.8rem;
-      cursor: pointer;
-      color: var(--accent);
-      transition: transform 0.2s;
-    }
-
-    .menu-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .links {
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
-      margin-top: 50px;
-    }
-
-    a {
-      background: var(--accent);
-      color: #fff;
-      padding: 14px 25px;
-      border-radius: 12px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: transform 0.2s;
-      width: 80%;
-      max-width: 300px;
+      justify-content: center;
+      min-height: 100vh;
       text-align: center;
+      overflow-x: hidden;
     }
 
-    a:hover {
-      transform: scale(1.05);
+    h1 {
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 5px;
+      animation: glow 3s infinite ease-in-out;
     }
 
-    /* Overlay Base */
-    .overlay {
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 5px var(--accent); }
+      50% { text-shadow: 0 0 15px var(--accent); }
+    }
+
+    p {
+      margin-top: 0;
+      opacity: 0.9;
+    }
+
+    .link-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 80%;
+      max-width: 400px;
+      margin-top: 10px;
+    }
+
+    .link {
+      background-color: var(--card);
+      color: var(--text);
+      text-decoration: none;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid #222;
+      transition: all 0.2s ease;
+    }
+
+    .link:hover {
+      background-color: var(--hover);
+      transform: scale(1.02);
+    }
+
+    footer {
+      margin-top: 40px;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    /* ☰ Menu Button */
+    #menuBtn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    #menuBtn:hover {
+      background-color: var(--hover);
+    }
+
+    /* 🔳 Overlay Menu */
+    #menuOverlay {
+      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.94);
-      display: flex;
+      background: rgba(10, 10, 10, 0.95);
+      backdrop-filter: blur(6px);
+      z-index: 15;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(20px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      z-index: 10;
+      animation: fadeIn 0.3s ease;
     }
 
-    .overlay.active {
-      opacity: 1;
-      pointer-events: all;
-      transform: translateY(0);
+    #menuOverlay.active {
+      display: flex;
     }
 
-    .overlay button {
-      margin: 10px;
-      background: var(--accent);
-      border: none;
-      padding: 12px 25px;
-      border-radius: 10px;
-      font-size: 1rem;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .menu-item {
+      font-size: 1.3rem;
+      margin: 15px 0;
+      color: var(--text);
       cursor: pointer;
-      color: white;
-      font-weight: 600;
-      transition: transform 0.2s;
+      transition: color 0.2s;
     }
 
-    .overlay button:hover {
-      transform: scale(1.05);
+    .menu-item:hover {
+      color: var(--accent);
     }
 
-    .close-btn {
+    .closeMenu {
       position: absolute;
       top: 20px;
-      right: 25px;
-      font-size: 1.6rem;
+      right: 20px;
+      background: var(--hover);
+      border: none;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
       cursor: pointer;
-      color: var(--accent);
-      transition: transform 0.2s;
     }
 
-    .close-btn:hover {
-      transform: rotate(90deg);
-    }
-
-    /* Window Box */
-    .window {
-      background: var(--card);
-      border-radius: 15px;
-      padding: 25px;
-      width: 80%;
-      max-width: 400px;
+    /* 🔧 Panel umum */
+    .panel {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 20px;
+      z-index: 25;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      color: var(--text-dark);
-      box-shadow: 0 0 25px rgba(0,0,0,0.6);
-      transform: scale(0.95);
-      animation: pop 0.4s ease forwards;
+      animation: fadeIn 0.3s ease;
     }
 
-    .window h2 {
-      margin-top: 0;
-      color: var(--accent);
+    .panel.active {
+      display: flex;
     }
 
-    @keyframes pop {
-      from { opacity: 0; transform: scale(0.9); }
-      to { opacity: 1; transform: scale(1); }
+    .backBtn {
+      background-color: var(--hover);
+      border: none;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
     }
   </style>
 </head>
-<body>
-  <header>
-    <span>Azthera SMP</span>
-    <span class="menu-btn" onclick="toggleMenu()">☰</span>
-  </header>
+<body data-theme="dark">
 
-  <div class="links">
-    <a href="https://discord.gg/jfvsWcGpq7">Discord</a>
-    <a href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo">WhatsApp</a>
-    <a href="https://www.tiktok.com/@azthera.smp">TikTok</a>
-    <a href="https://www.instagram.com/Afn.mc">Instagram</a>
-    <a href="https://youtube.com/@azthera.smp.server">YouTube</a>
+  <!-- ☰ Tombol Menu -->
+  <button id="menuBtn">☰</button>
+
+  <!-- 🔳 Overlay Menu -->
+  <div id="menuOverlay">
+    <button class="closeMenu">✖</button>
+    <div class="menu-item" id="menuHome">🏠 Beranda</div>
+    <div class="menu-item" id="menuStatus">🖥️ Server Status</div>
+    <div class="menu-item" id="menuSettings">⚙️ Settings</div>
   </div>
 
-  <!-- Menu Overlay -->
-  <div class="overlay" id="menu">
-    <span class="close-btn" onclick="toggleMenu()">✕</span>
-    <button onclick="openStatus()">Server Status</button>
-    <button onclick="openSettings()">⚙️ Settings</button>
+  <!-- 🔹 Panel Server Status -->
+  <div id="statusPanel" class="panel">
+    <h2>🖥️ Status Server</h2>
+    <p>Server: <strong>mc.noxstore.site:25567</strong></p>
+    <p>Status: <span id="server-status">Checking...</span></p>
+    <p>Player: <span id="player-count">-</span></p>
+    <p>Ping: <span id="ping">-</span></p>
+    <button class="backBtn" id="backFromStatus">⬅️ Kembali</button>
   </div>
 
-  <!-- Server Status Overlay -->
-  <div class="overlay" id="status">
-    <span class="close-btn" onclick="toggleStatus()">✕</span>
-    <div class="window">
-      <h2>Server Status</h2>
-      <p id="server-ip">mc.noxstore.site:25567</p>
-      <p id="server-status">Checking...</p>
-      <p id="server-players"></p>
-      <p id="server-ping"></p>
-    </div>
+  <!-- ⚙️ Panel Settings -->
+  <div id="settingsPanel" class="panel">
+    <h2>⚙️ Pengaturan</h2>
+    <button id="toggleTheme" class="backBtn">🌙 Ganti Tema</button>
+    <button class="backBtn" id="backFromSettings">⬅️ Kembali</button>
   </div>
 
-  <!-- Settings Overlay -->
-  <div class="overlay" id="settings">
-    <span class="close-btn" onclick="toggleSettings()">✕</span>
-    <div class="window">
-      <h2>Settings</h2>
-      <button onclick="toggleTheme()">🌗 Dark / Light Mode</button>
-      <button onclick="alert('🎨 Custom background coming soon!')">🎨 Background Mode</button>
-    </div>
+  <!-- 🌍 Halaman Utama -->
+  <h1>Azthera SMP</h1>
+  <p>Welcome to the Official Links</p>
+
+  <div class="link-container">
+    <a href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" class="link">🎥 YouTube</a>
+    <a href="https://discord.gg/jfvsWcGpq7" class="link">💬 Discord</a>
+    <a href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" class="link">📱 WhatsApp</a>
+    <a href="https://www.tiktok.com/@azthera.smp" class="link">🎵 TikTok</a>
+    <a href="https://www.instagram.com/Afn.mc" class="link">📸 Instagram</a>
   </div>
+
+  <footer>© 2025 Azthera SMP</footer>
 
   <script>
-    const menu = document.getElementById('menu');
-    const statusOverlay = document.getElementById('status');
-    const settingsOverlay = document.getElementById('settings');
-    const html = document.documentElement;
+    const menuBtn = document.getElementById("menuBtn");
+    const menuOverlay = document.getElementById("menuOverlay");
+    const closeMenu = document.querySelector(".closeMenu");
 
-    function toggleMenu() { menu.classList.toggle('active'); }
-    function openStatus() { menu.classList.remove('active'); statusOverlay.classList.add('active'); fetchStatus(); }
-    function toggleStatus() { statusOverlay.classList.remove('active'); }
-    function openSettings() { menu.classList.remove('active'); settingsOverlay.classList.add('active'); }
-    function toggleSettings() { settingsOverlay.classList.remove('active'); }
+    const statusPanel = document.getElementById("statusPanel");
+    const settingsPanel = document.getElementById("settingsPanel");
 
-    function toggleTheme() {
-      const theme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', theme);
-    }
+    const backFromStatus = document.getElementById("backFromStatus");
+    const backFromSettings = document.getElementById("backFromSettings");
+    const toggleTheme = document.getElementById("toggleTheme");
 
+    const SERVER_HOST = "mc.noxstore.site";
+    const SERVER_PORT = "25567";
+    const statusEl = document.getElementById("server-status");
+    const playerEl = document.getElementById("player-count");
+    const pingEl = document.getElementById("ping");
+
+    // 🌐 Fetch status server
     async function fetchStatus() {
-      const ip = 'mc.noxstore.site:25567';
-      const status = document.getElementById('server-status');
-      const players = document.getElementById('server-players');
-      const ping = document.getElementById('server-ping');
-      status.textContent = 'Checking...';
-      players.textContent = '';
-      ping.textContent = '';
-
+      const start = performance.now();
+      statusEl.textContent = "Checking...";
       try {
-        const res = await fetch(`https://api.mcsrvstat.us/2/${ip}`);
+        const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SERVER_HOST}:${SERVER_PORT}`);
+        const end = performance.now();
+        const truePing = Math.round(end - start);
         const data = await res.json();
+
         if (data.online) {
-          status.textContent = '🟢 Online';
-          players.textContent = `Players: ${data.players.online}/${data.players.max}`;
-          ping.textContent = `Ping: ${data.debug.ping ? data.debug.ping : 'OK'} ms`;
+          statusEl.textContent = "🟢 Online";
+          playerEl.textContent = `${data.players.online}/${data.players.max}`;
+          pingEl.textContent = `${truePing} ms`;
         } else {
-          status.textContent = '🔴 Offline';
+          statusEl.textContent = "🔴 Offline";
+          playerEl.textContent = "0";
+          pingEl.textContent = "-";
         }
-      } catch {
-        status.textContent = '⚠️ Failed to fetch status';
+      } catch (e) {
+        statusEl.textContent = "⚪ Error";
       }
     }
+
+    // ☰ Menu control
+    menuBtn.onclick = () => menuOverlay.classList.add("active");
+    closeMenu.onclick = () => menuOverlay.classList.remove("active");
+
+    document.getElementById("menuHome").onclick = () => {
+      menuOverlay.classList.remove("active");
+    };
+
+    document.getElementById("menuStatus").onclick = () => {
+      menuOverlay.classList.remove("active");
+      statusPanel.classList.add("active");
+      fetchStatus();
+    };
+
+    document.getElementById("menuSettings").onclick = () => {
+      menuOverlay.classList.remove("active");
+      settingsPanel.classList.add("active");
+    };
+
+    backFromStatus.onclick = () => statusPanel.classList.remove("active");
+    backFromSettings.onclick = () => settingsPanel.classList.remove("active");
+
+    // 🌙 Tema toggle
+    toggleTheme.onclick = () => {
+      const current = document.body.getAttribute("data-theme");
+      const newTheme = current === "dark" ? "light" : "dark";
+      document.body.setAttribute("data-theme", newTheme);
+      toggleTheme.textContent = newTheme === "dark" ? "🌙 Ganti Tema" : "☀️ Ganti Tema";
+    };
   </script>
 </body>
 </html>

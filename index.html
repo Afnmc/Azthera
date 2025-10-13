@@ -1,87 +1,348 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Azhtera SMP</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Azhtera · Links</title>
   <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #eef1f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      margin: 0;
-      padding: 40px 20px;
+    :root{
+      --bg: #eef2f5;
+      --card: #fff;
+      --text: #0b2b6b;
+      --accent: #0047ff;
+      --muted: #6b7280;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 8px 24px rgba(2,6,23,0.08);
+      --glow: 0 0 18px rgba(0,71,255,0.12);
+    }
+    [data-theme="dark"]{
+      --bg: #0b1220;
+      --card: #0f1724;
+      --text: #e6eefc;
+      --accent: #3ea0ff;
+      --muted: #9aa7bf;
+      --glass: rgba(255,255,255,0.03);
+      --shadow: 0 8px 30px rgba(2,6,23,0.6);
+      --glow: 0 0 22px rgba(62,160,255,0.08);
     }
 
-    .profile img {
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      object-fit: cover;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(180deg,var(--bg), #dfe8f5 160%);
+      padding:40px 20px;
+      color:var(--text);
+      transition: background .3s ease;
     }
 
-    h1 {
-      color: #0047ff;
-      font-size: 1.8em;
-      margin-top: 15px;
-      margin-bottom: 25px;
+    .wrap{
+      width:100%;
+      max-width:460px;
+      position:relative;
     }
 
-    .links {
-      width: 100%;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
+    /* top-right controls: theme + server status */
+    .topbar{
+      position:absolute;
+      right:0;
+      top:-10px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      transform: translateY(-50%);
     }
-
-    .link {
-      background-color: white;
-      border-radius: 15px;
-      padding: 15px;
-      text-align: center;
-      text-decoration: none;
-      color: #0047ff;
-      font-weight: 600;
-      font-size: 1em;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-      transition: 0.2s;
+    .chip{
+      background:var(--card);
+      padding:8px 12px;
+      border-radius:999px;
+      box-shadow:var(--shadow);
+      display:flex;
+      gap:10px;
+      align-items:center;
+      font-size:13px;
+      color:var(--muted);
+      backdrop-filter: blur(6px);
     }
-
-    .link:hover {
-      transform: scale(1.03);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    .server-status{
+      min-width:170px;
+      display:flex;
+      gap:10px;
+      align-items:center;
     }
+    .dot {
+      width:12px;height:12px;border-radius:50%;
+      background:#cbd5e1;box-shadow:0 0 6px rgba(0,0,0,0.08);
+    }
+    .dot.online{background:#22c55e; box-shadow:0 0 10px rgba(34,197,94,0.22)}
+    .dot.offline{background:#ef4444; box-shadow:0 0 10px rgba(239,68,68,0.18)}
+    .small{font-size:12px;color:var(--muted)}
 
-    .footer {
-      margin-top: 35px;
-      color: #777;
-      font-size: 0.9em;
+    .container{
+      background: linear-gradient(180deg, var(--card), rgba(255,255,255,0.02));
+      border-radius:20px;
+      padding:28px;
+      box-shadow:var(--shadow);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .profile{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .avatar{
+      width:120px;height:120px;border-radius:50%;overflow:hidden;
+      box-shadow:0 6px 20px rgba(2,6,23,0.12);
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+    h1{margin:0;font-size:1.4rem;color:var(--accent);font-weight:700}
+    p.desc{margin:0;color:var(--muted);font-size:14px;margin-bottom:14px}
+
+    .links{display:flex;flex-direction:column;gap:12px;padding-top:8px}
+    .link{
+      display:flex;align-items:center;justify-content:center;
+      gap:10px;
+      padding:14px 16px;border-radius:12px;
+      text-decoration:none;color:var(--accent);
+      font-weight:700;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+      border: 1px solid rgba(0,71,255,0.06);
+      box-shadow: var(--glow);
+      transform: translateY(0);
+      transition: transform .18s ease, box-shadow .18s ease, background .18s;
+      position:relative; overflow:hidden;
+    }
+    .link:hover{transform:translateY(-6px); box-shadow: 0 18px 40px rgba(2,6,23,0.12)}
+    .link .emoji{font-size:18px}
+    .link::after{
+      content:"";position:absolute;left:0;top:0;height:100%;width:0;background:linear-gradient(90deg, rgba(0,71,255,0.12), rgba(62,160,255,0.06));
+      transition:width .28s ease;
+    }
+    .link:hover::after{width:100%}
+
+    .footer{margin-top:18px;color:var(--muted);text-align:center;font-size:13px}
+
+    /* toggle */
+    .theme-toggle{
+      width:44px;height:28px;border-radius:999px;padding:4px;background:linear-gradient(180deg,#fff,#f3f4f6);
+      display:flex;align-items:center;gap:6px;cursor:pointer;position:relative;border:0;
+    }
+    .theme-toggle .knob{
+      width:20px;height:20px;border-radius:50%;background:var(--accent);transition:left .2s ease, transform .2s;
+      position:absolute;left:4px;box-shadow:0 6px 14px rgba(2,6,23,0.12)
+    }
+    [data-theme="dark"] .theme-toggle{background:linear-gradient(180deg,#0f1724,#0b1220)}
+    [data-theme="dark"] .theme-toggle .knob{left:20px;background:var(--accent)}
+
+    /* responsive */
+    @media (max-width:420px){
+      .wrap{padding:12px}
+      .container{padding:22px}
+      .avatar{width:100px;height:100px}
     }
   </style>
 </head>
 <body>
-  <div class="profile">
-    <img src="https://i.imghippo.com/files/cZXw7832SCU.png" alt="Azhtera SMP">
+  <div class="wrap" id="wrap">
+    <div class="topbar">
+      <div class="chip server-status" id="server-chip" title="Server status">
+        <div class="dot offline" id="server-dot"></div>
+        <div style="display:flex;flex-direction:column">
+          <div style="font-weight:700;font-size:13px" id="server-state">Checking...</div>
+          <div class="small" id="server-more">mc.noxstore.site:25567</div>
+        </div>
+        <div style="width:10px"></div>
+        <div class="small" id="players">—</div>
+        <div class="small" style="margin-left:8px">Ping: <span id="ping">—</span>ms</div>
+      </div>
+
+      <div class="chip" style="padding:6px 8px">
+        <div class="theme-toggle" id="themeToggle" aria-label="toggle theme" title="Toggle theme">
+          <div class="knob" id="knob"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="mainCard">
+      <div class="profile">
+        <div class="avatar"><img src="https://i.imghippo.com/files/cZXw7832SCU.png" alt="Azhtera"></div>
+        <h1>Azhtera SMP</h1>
+        <p class="desc">Server community & social links</p>
+      </div>
+
+      <div class="links" id="links">
+        <a class="link" href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" target="_blank"><span class="emoji">🎥</span> YouTube</a>
+        <a class="link" href="https://discord.gg/jfvsWcGpq7" target="_blank"><span class="emoji">🎮</span> Discord Server</a>
+        <a class="link" href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" target="_blank"><span class="emoji">💬</span> WhatsApp Community</a>
+        <a class="link" href="https://www.tiktok.com/@azthera.smp.servr" target="_blank"><span class="emoji">🎵</span> TikTok</a>
+        <a class="link" href="https://www.instagram.com/Afn.mc" target="_blank"><span class="emoji">📸</span> Instagram</a>
+      </div>
+
+      <div class="footer">© <span id="year"></span> Azhtera SMP</div>
+    </div>
   </div>
 
-  <h1>Azhtera SMP</h1>
+  <script>
+    // --- theme toggle + persist ---
+    const root = document.documentElement;
+    const wrap = document.getElementById('wrap');
+    const themeToggle = document.getElementById('themeToggle');
+    const knob = document.getElementById('knob');
 
-  <div class="links">
-    <a href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" class="link" target="_blank">🎥 YouTube</a>
-    <a href="https://discord.gg/jfvsWcGpq7" class="link" target="_blank">🎮 Discord Server</a>
-    <a href="https://chat.whatsapp.com/C5ys8VP3mahJeL9yZr6Tbo" class="link" target="_blank">💬 WhatsApp Community</a>
-    <a href="https://www.tiktok.com/@azthera.smp" class="link" target="_blank">🎵 TikTok</a>
-    <a href="https://www.instagram.com/Afn.mc" class="link" target="_blank">📸 Instagram</a>
-  </div>
+    function applyTheme(t){
+      if(t === 'dark') document.documentElement.setAttribute('data-theme','dark');
+      else document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('az_theme', t);
+    }
+    // init
+    const saved = localStorage.getItem('az_theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    applyTheme(saved);
 
-  <div class="footer">
-    © 2025 Azhtera SMP
-  </div>
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+
+    // set year
+    document.getElementById('year').innerText = new Date().getFullYear();
+
+    // --- SERVER STATUS LOGIC ---
+    const SERVER_HOST = 'mc.noxstore.site';
+    const SERVER_PORT = 25567;
+    const serverDot = document.getElementById('server-dot');
+    const serverState = document.getElementById('server-state');
+    const serverMore = document.getElementById('server-more');
+    const playersEl = document.getElementById('players');
+    const pingEl = document.getElementById('ping');
+
+    // Try multiple public APIs (some provide players/ping). Uses Promise.any (try sequentially for broader support)
+    async function queryServer() {
+      serverState.textContent = 'Checking...';
+      serverDot.className = 'dot';
+      playersEl.textContent = '—';
+      pingEl.textContent = '—';
+      serverMore.textContent = `${SERVER_HOST}:${SERVER_PORT}`;
+
+      // helper: fetch with timeout
+      function ffetch(url, options = {}, timeout = 8000){
+        return new Promise((res, rej) => {
+          const timer = setTimeout(()=> rej(new Error('timeout')), timeout);
+          fetch(url, options).then(r => { clearTimeout(timer); res(r) }).catch(e => { clearTimeout(timer); rej(e) });
+        });
+      }
+
+      // Candidate APIs (client-side). Not guaranteed by CORS - code will fallback gracefully.
+      const endpoints = [
+        // mcapi.us often returns {online, players, etc}
+        `https://api.mcsrvstat.us/2/${SERVER_HOST}:${SERVER_PORT}`,
+        // alternative ping api
+        `https://api.mcsrv.eu/ping/${SERVER_HOST}/${SERVER_PORT}`,
+        // mcapi (may include latency)
+        `https://api.mcsrvstat.us/2/${SERVER_HOST}`,
+        // third attempt (some regions)
+        `https://mcapi.us/server/status?ip=${SERVER_HOST}&port=${SERVER_PORT}`
+      ];
+
+      // Try each endpoint until one works
+      for(const url of endpoints){
+        try {
+          const resp = await ffetch(url, {cache:'no-store'}, 8000);
+          if(!resp.ok) continue;
+          const data = await resp.json();
+          // Try to normalize different response shapes
+          if(data && (data.online === true || data.online === false || data.status === 'success' || data.players || data.players && data.players.online !== undefined)) {
+            // mcsrvstat.us shape
+            if(data.online !== undefined) {
+              const online = data.online === true;
+              serverDot.className = 'dot ' + (online ? 'online' : 'offline');
+              serverState.textContent = online ? 'Online' : 'Offline';
+              // players
+              let onlinePlayers = '—';
+              if(data.players && typeof data.players.online === 'number') onlinePlayers = `${data.players.online}/${data.players.max||'?'}`;
+              if(data.players && typeof data.players.online !== 'number' && typeof data.players === 'object') {
+                if(data.players.online !== undefined) onlinePlayers = `${data.players.online}/${data.players.max||'?'}`;
+              }
+              // some endpoints put players differently (mcapi.us)
+              if(data.players && typeof data.players === 'object' && data.players.now != undefined) {
+                onlinePlayers = `${data.players.now}/${data.players.max||'?'}`;
+              }
+              // ping: mcsrvstat.us doesn't give ping; some API do (latency)
+              let ping = (data.debug && data.debug.ping) ? data.debug.ping : (data.latency || data.ping || (data.query && data.query.latency) || null);
+              if(ping == null) ping = '—';
+              playersEl.textContent = onlinePlayers;
+              pingEl.textContent = ping;
+              return;
+            }
+
+            // api.mcsrv.eu shape: {online:true, players:{now:1,max:20}, latency: 120}
+            if(data.online !== undefined || data.players !== undefined) {
+              const online = !!data.online;
+              serverDot.className = 'dot ' + (online ? 'online' : 'offline');
+              serverState.textContent = online ? 'Online' : 'Offline';
+              let onlinePlayers = '—';
+              if(data.players && (data.players.online !== undefined || data.players.now !== undefined)) {
+                if(data.players.online !== undefined) onlinePlayers = `${data.players.online}/${data.players.max||'?'}`;
+                else onlinePlayers = `${data.players.now}/${data.players.max||'?'}`;
+              }
+              const ping = data.ping || data.latency || '—';
+              playersEl.textContent = onlinePlayers;
+              pingEl.textContent = ping;
+              return;
+            }
+
+            // mcapi.us shape: data.online, data.players.now, data.latency
+            if(data.online !== undefined) {
+              const online = !!data.online;
+              serverDot.className = 'dot ' + (online ? 'online' : 'offline');
+              serverState.textContent = online ? 'Online' : 'Offline';
+              const onlinePlayers = data.players && (data.players.now !== undefined) ? `${data.players.now}/${data.players.max||'?'}` : '—';
+              const ping = data.latency || data.ping || '—';
+              playersEl.textContent = onlinePlayers;
+              pingEl.textContent = ping;
+              return;
+            }
+          }
+        } catch(e){
+          // try next endpoint
+          //console.log('endpoint failed', url, e);
+          continue;
+        }
+      }
+
+      // If reached here, couldn't fetch via APIs (CORS or offline) -> show fallback
+      serverDot.className = 'dot offline';
+      serverState.textContent = 'Unknown';
+      playersEl.textContent = '—';
+      pingEl.textContent = '—';
+    }
+
+    // initial fetch + periodic poll every 20s
+    queryServer();
+    setInterval(queryServer, 20000);
+
+    // Small UX: click server chip to open server address in new tab (or copy)
+    document.getElementById('server-chip').addEventListener('click', ()=> {
+      // try copy to clipboard
+      const addr = `${SERVER_HOST}:${SERVER_PORT}`;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(addr).then(()=> {
+          serverState.textContent = 'Copied address';
+          setTimeout(()=> queryServer(), 1200);
+        }).catch(()=> window.open(`https://${SERVER_HOST}`, '_blank'));
+      } else {
+        window.open(`https://${SERVER_HOST}`, '_blank');
+      }
+    });
+
+    // friendly focus animation
+    const mainCard = document.getElementById('mainCard');
+    mainCard.addEventListener('mouseover', ()=> mainCard.style.transform = 'translateY(-4px)');
+    mainCard.addEventListener('mouseout', ()=> mainCard.style.transform = 'translateY(0)');
+
+  </script>
 </body>
 </html>

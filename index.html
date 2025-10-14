@@ -26,17 +26,16 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif;}
 html,body{height:100%;overflow:hidden;color:var(--muted-dark);transition:color .25s;}
 
-/* ---------- Background paling belakang (image, tidak mengubah panel/box) ---------- */
-/* Gelap (default) & Terang diatur lewat data-theme pada <html> */
+/* ---------- Background paling belakang ---------- */
 body::before{
   content:"";
   position:fixed;
   inset:0;
-  /* gambar malam - gelap */
   background: url("https://i.ibb.co.com/Z64HHhkR/IMG-20251014-082055.jpg") no-repeat center center fixed;
   background-size: cover;
-  z-index: -1; /* pastikan di paling belakang */
+  z-index: -1;
   pointer-events: none;
+  transition: opacity .3s ease;
 }
 
 /* Ganti ke gambar siang saat tema light */
@@ -49,26 +48,26 @@ body::before{
 #loadingScreen{
   position:fixed; inset:0;
   display:flex; justify-content:center; align-items:center;
-  background:transparent; /* biarkan gambar belakang terlihat */
+  background:#000;
   z-index:999;
   flex-direction:column;
+  transition:opacity .5s ease;
 }
 .loader-circle{
   width:50px;height:50px;
-  border:5px solid var(--glass);
-  border-top-color:var(--accent-blue);
+  border:5px solid rgba(255,255,255,0.2);
+  border-top-color:#fff;
   border-radius:50%;
   animation:spin 1s linear infinite;
   margin-bottom:16px;
 }
 @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-.loader-text{color:var(--muted-dark); font-weight:700;}
+.loader-text{color:#fff; font-weight:700;}
 
 /* ---------- Welcome ---------- */
 #welcome{
   position:fixed; inset:0;
   display:flex; align-items:center; justify-content:center;
-  /* gunakan semi-opaque overlay agar teks terbaca, tapi bukan blur */
   background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
   z-index:200; text-align:center; display:none;
 }
@@ -91,7 +90,7 @@ body::before{
   font-weight:700;
 }
 
-/* ---------- Panels Fullscreen with Box ---------- */
+/* ---------- Panels ---------- */
 .panel{
   position:fixed;
   inset:0;
@@ -101,7 +100,7 @@ body::before{
   justify-content:center;
   padding:20px;
   z-index:130;
-  background: transparent; /* biarkan gambar belakang terlihat */
+  background: transparent;
 }
 .panel.active{display:flex;}
 .panel .box{
@@ -115,14 +114,6 @@ body::before{
   flex-direction:column;
   align-items:center;
 }
-
-/* Animasi per item panel */
-.panel .box > *{
-  opacity:0;
-  transform:translateY(-20px);
-  transition:all 0.4s ease-out;
-}
-
 .panel h2{color:var(--accent-blue);margin-bottom:12px;font-size:2rem;}
 .panel a.home-link{
   display:block;
@@ -139,8 +130,6 @@ body::before{
   transition:.2s;
 }
 .panel a.home-link:hover{background:var(--glass-2);}
-
-/* ---------- Server status items ---------- */
 .status-item{
   width:100%;
   padding:12px 16px;
@@ -188,12 +177,18 @@ body::before{
 .mini-btn:hover{background: var(--glass); transform:translateY(-3px);}
 
 /* ---------- Toggle lever ---------- */
-.toggle-row{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-top:12px;
+.settings-item{
   width:100%;
+  padding:12px 16px;
+  margin:6px 0;
+  background:var(--glass);
+  border:1px solid var(--glass-2);
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:700;
+  color:inherit;
 }
 .toggle-switch{
   position:relative;
@@ -212,22 +207,6 @@ body::before{
   transition:left .2s;
 }
 .toggle-switch.active .lever{left:28px;}
-.settings-item{
-  width:100%;
-  padding:12px 16px;
-  margin:6px 0;
-  background:var(--glass);
-  border:1px solid var(--glass-2);
-  border-radius:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  font-weight:700;
-  color:inherit;
-  opacity:0;
-  transform:translateY(-20px);
-  transition:all 0.4s ease-out;
-}
 </style>
 </head>
 <body>
@@ -257,11 +236,11 @@ body::before{
   <button class="mini-btn" id="settingsBtn">⚙️</button>
 </aside>
 
-<!-- Panels Fullscreen -->
+<!-- Panels -->
 <section class="panel" id="homePanel">
   <div class="box">
     <h2>Azthera SMP</h2>
-    <a href="https://youtube.com/@azthera.smp.server?si=s8ZxzU9O5QYf0AcH" target="_blank" class="home-link">YouTube</a>
+    <a href="https://youtube.com/@azthera.smp.server" target="_blank" class="home-link">YouTube</a>
     <a href="https://www.tiktok.com/@azthera.smp" target="_blank" class="home-link">TikTok</a>
     <a href="https://www.instagram.com/Afn.mc" target="_blank" class="home-link">Instagram</a>
     <a href="https://discord.gg/jfvsWcGpq7" target="_blank" class="home-link">Discord</a>
@@ -289,86 +268,85 @@ body::before{
 </section>
 
 <script>
-// Wait for full page load
-window.addEventListener('load',()=>{
-  const loading=document.getElementById('loadingScreen');
-  loading.style.display='none';
-  const welcome=document.getElementById('welcome');
-  welcome.style.display='flex';
-});
+// ==== PRELOAD BACKGROUND IMAGE ====
+const images = [
+  "https://i.ibb.co.com/Z64HHhkR/IMG-20251014-082055.jpg", // dark
+  "https://i.ibb.co.com/bj7b4wPq/IMG-20251014-082040.jpg"  // light
+];
+let loadedCount = 0;
+const loading = document.getElementById('loadingScreen');
+const welcome = document.getElementById('welcome');
 
-// Welcome
-const closeWelcome=document.querySelector('.closeWelcome');
-const homePanel=document.getElementById('homePanel');
-closeWelcome.addEventListener('click',()=>{
-  document.getElementById('welcome').style.display='none';
-  homePanel.classList.add('active');
-  animatePanelItems(homePanel);
-});
-
-// Sidebar toggle
-const hamburger=document.getElementById('hamburger');
-const drawer=document.getElementById('drawer');
-let drawerOpen=false;
-hamburger.addEventListener('click',()=>{
-  drawerOpen=!drawerOpen;
-  drawer.classList.toggle('open',drawerOpen);
-});
-
-// Panel buttons
-const homeBtn=document.getElementById('homeBtn');
-const statusBtn=document.getElementById('statusBtn');
-const settingsBtn=document.getElementById('settingsBtn');
-const statusPanel=document.getElementById('statusPanel');
-const settingsPanel=document.getElementById('settingsPanel');
-
-function animatePanelItems(panel){
-  const items = panel.querySelectorAll('.status-item, .settings-item, .home-link, h2');
-  items.forEach((el,i)=>{
-    el.style.opacity=0;
-    el.style.transform='translateY(-20px)';
+function checkLoaded(){
+  loadedCount++;
+  if(loadedCount === images.length){
     setTimeout(()=>{
-      el.style.opacity=1;
-      el.style.transform='translateY(0)';
-    }, i*150);
-  });
+      loading.style.opacity = '0';
+      setTimeout(()=>{
+        loading.style.display='none';
+        welcome.style.display='flex';
+      },500);
+    },300);
+  }
 }
 
-function openPanel(panel){
-  [homePanel,statusPanel,settingsPanel].forEach(p=>p.classList.remove('active'));
-  panel.classList.add('active');
-  animatePanelItems(panel);
-}
-homeBtn.addEventListener('click',()=>openPanel(homePanel));
-statusBtn.addEventListener('click',()=>openPanel(statusPanel));
-settingsBtn.addEventListener('click',()=>openPanel(settingsPanel));
+images.forEach(src=>{
+  const img = new Image();
+  img.src = src;
+  img.onload = checkLoaded;
+  img.onerror = checkLoaded;
+});
 
-// Server status
-const serverState=document.getElementById('serverState');
-const serverPlayers=document.getElementById('serverPlayers');
+// ==== WELCOME ====
+document.querySelector('.closeWelcome').addEventListener('click',()=>{
+  welcome.style.display='none';
+  document.getElementById('homePanel').classList.add('active');
+});
+
+// ==== DRAWER ====
+const drawer=document.getElementById('drawer');
+document.getElementById('hamburger').addEventListener('click',()=>drawer.classList.toggle('open'));
+
+// ==== PANEL SWITCH ====
+const panels={
+  home:document.getElementById('homePanel'),
+  status:document.getElementById('statusPanel'),
+  settings:document.getElementById('settingsPanel')
+};
+function openPanel(name){
+  Object.values(panels).forEach(p=>p.classList.remove('active'));
+  panels[name].classList.add('active');
+}
+document.getElementById('homeBtn').onclick=()=>openPanel('home');
+document.getElementById('statusBtn').onclick=()=>openPanel('status');
+document.getElementById('settingsBtn').onclick=()=>openPanel('settings');
+
+// ==== SERVER STATUS ====
 async function fetchServer(){
+  const state=document.getElementById('serverState');
+  const players=document.getElementById('serverPlayers');
   try{
     const res=await fetch('https://api.mcstatus.io/v2/status/java/mc.noxstore.site:25567',{cache:'no-store'});
     const data=await res.json();
-    serverState.textContent=data.online?'🟢 Online':'🔴 Offline';
-    serverPlayers.textContent=data.players?.online+'/'+data.players?.max;
+    state.textContent=data.online?'🟢 Online':'🔴 Offline';
+    players.textContent=data.players?.online+'/'+data.players?.max;
   }catch{
-    serverState.textContent='⚪ Error';
-    serverPlayers.textContent='-';
+    state.textContent='⚪ Error';
+    players.textContent='-';
   }
 }
-setInterval(()=>{if(statusPanel.classList.contains('active')) fetchServer();},10000);
+setInterval(()=>{if(panels.status.classList.contains('active')) fetchServer();},10000);
 
-// Theme toggle lever
-const themeToggle=document.getElementById('themeToggle');
-const htmlEl=document.documentElement;
+// ==== THEME TOGGLE ====
+const toggle=document.getElementById('themeToggle');
+const html=document.documentElement;
 let theme=localStorage.getItem('az_theme')||'dark';
 function applyTheme(t){
-  htmlEl.setAttribute('data-theme',t);
-  themeToggle.classList.toggle('active',t==='light');
+  html.setAttribute('data-theme',t);
+  toggle.classList.toggle('active',t==='light');
   localStorage.setItem('az_theme',t);
 }
-themeToggle.addEventListener('click',()=>{
+toggle.addEventListener('click',()=>{
   theme=(theme==='dark'?'light':'dark');
   applyTheme(theme);
 });

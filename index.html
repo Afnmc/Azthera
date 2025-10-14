@@ -13,6 +13,7 @@
   --glass:rgba(255,255,255,0.03);
   --glass-2:rgba(255,255,255,0.02);
 }
+/* Tema terang */
 [data-theme="light"]{
   --bg-dark:#eef3f8;
   --panel-dark:#ffffff;
@@ -21,14 +22,34 @@
   --glass:rgba(0,0,0,0.03);
   --glass-2:rgba(0,0,0,0.02);
 }
+
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif;}
-html,body{height:100%;overflow:hidden;background:var(--bg-dark);color:var(--muted-dark);transition:background .35s,color .25s;}
+html,body{height:100%;overflow:hidden;color:var(--muted-dark);transition:color .25s;}
+
+/* ---------- Background paling belakang (image, tidak mengubah panel/box) ---------- */
+/* Gelap (default) & Terang diatur lewat data-theme pada <html> */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  /* gambar malam - gelap */
+  background: url("https://i.ibb.co.com/Z64HHhkR/IMG-20251014-082055.jpg") no-repeat center center fixed;
+  background-size: cover;
+  z-index: -1; /* pastikan di paling belakang */
+  pointer-events: none;
+}
+
+/* Ganti ke gambar siang saat tema light */
+[data-theme="light"] body::before{
+  background: url("https://i.ibb.co.com/bj7b4wPq/IMG-20251014-082040.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
 
 /* ---------- Loading Screen ---------- */
 #loadingScreen{
   position:fixed; inset:0;
   display:flex; justify-content:center; align-items:center;
-  background:var(--bg-dark);
+  background:transparent; /* biarkan gambar belakang terlihat */
   z-index:999;
   flex-direction:column;
 }
@@ -47,7 +68,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg-dark);color:var(--mute
 #welcome{
   position:fixed; inset:0;
   display:flex; align-items:center; justify-content:center;
-  background:linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.95));
+  /* gunakan semi-opaque overlay agar teks terbaca, tapi bukan blur */
+  background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
   z-index:200; text-align:center; display:none;
 }
 #welcome .box{
@@ -79,7 +101,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg-dark);color:var(--mute
   justify-content:center;
   padding:20px;
   z-index:130;
-  background: var(--bg-dark);
+  background: transparent; /* biarkan gambar belakang terlihat */
 }
 .panel.active{display:flex;}
 .panel .box{

@@ -24,7 +24,7 @@
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif;}
 html,body{height:100%;overflow:hidden;color:var(--muted-dark);transition:color .25s;}
 
-/* ---------- Background ---------- */
+/* Background */
 body::before{
   content:"";
   position:fixed; inset:0;
@@ -39,7 +39,7 @@ body::before{
   background-size:cover;
 }
 
-/* ---------- Loading Screen ---------- */
+/* Loading Screen */
 #loadingScreen{
   position:fixed; inset:0;
   display:flex; justify-content:center; align-items:center;
@@ -49,8 +49,6 @@ body::before{
   z-index:999;
   transition:opacity .8s ease;
 }
-
-/* Bintang kecil */
 .star{
   position:absolute;
   width:2px; height:2px;
@@ -63,8 +61,6 @@ body::before{
   0%,100%{opacity:.2; transform:scale(1);}
   50%{opacity:1; transform:scale(1.3);}
 }
-
-/* Meteor jatuh */
 .meteor{
   position:absolute;
   width:4px; height:100px;
@@ -79,7 +75,6 @@ body::before{
   70%{opacity:3;}
   100%{transform:translate(-200px,800px) rotate(45deg); opacity:0;}
 }
-
 .loader-text{
   color:#fff;
   font-weight:700;
@@ -93,7 +88,7 @@ body::before{
   50%{opacity:1;}
 }
 
-/* ---------- Welcome ---------- */
+/* Welcome */
 #welcome{
   position:fixed; inset:0;
   display:flex; align-items:center; justify-content:center;
@@ -122,8 +117,6 @@ body::before{
 #welcome .box p{animation-delay:.45s;}
 #welcome .box button{animation-delay:.7s;}
 @keyframes fadeSlideDown{from{opacity:0;transform:translateY(-25px);}to{opacity:1;transform:translateY(0);}}
-
-/* Tombol welcome */
 #welcome .closeWelcome{
   margin-top:20px;padding:10px 16px;
   background:var(--accent-blue);color:#fff;border:none;border-radius:12px;
@@ -133,7 +126,7 @@ body::before{
 }
 #welcome .closeWelcome:hover{transform:scale(1.05);box-shadow:0 0 18px rgba(47,135,230,0.5);}
 
-/* ---------- Panel, Sidebar, Toggle ---------- */
+/* Panels & Sidebar */
 .panel{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:130;background:transparent;}
 .panel.active{display:flex;}
 .panel .box{background:var(--panel-dark);padding:28px;border-radius:16px;width:100%;max-width:480px;box-shadow:0 20px 50px rgba(0,0,0,0.6);display:flex;flex-direction:column;align-items:center;border:1px solid var(--glass);}
@@ -180,6 +173,8 @@ body::before{
 <button id="hamburger">☰</button>
 <aside class="mini-drawer" id="drawer">
   <button class="mini-btn" id="homeBtn">🏠</button>
+  <button class="mini-btn" id="shopBtn">🛒</button>
+  <button class="mini-btn" id="supportBtn">💖</button>
   <button class="mini-btn" id="statusBtn">📊</button>
   <button class="mini-btn" id="settingsBtn">⚙️</button>
 </aside>
@@ -216,107 +211,36 @@ body::before{
 </section>
 
 <script>
-// ==== BUAT BINTANG & METEOR ====
-const loading = document.getElementById("loadingScreen");
-for(let i=0;i<80;i++){
-  const s=document.createElement('div');
-  s.className='star';
-  s.style.top=Math.random()*100+'%';
-  s.style.left=Math.random()*100+'%';
-  s.style.animationDelay=Math.random()*2+'s';
-  loading.appendChild(s);
-}
-for(let i=0;i<5;i++){
-  const m=document.createElement('div');
-  m.className='meteor';
-  m.style.top=Math.random()*40+'%';
-  m.style.left=Math.random()*100+'%';
-  m.style.animationDelay=(i*0.8)+'s';
-  m.style.animationDuration=(2.8+Math.random())+'s';
-  loading.appendChild(m);
-}
+const loading=document.getElementById("loadingScreen");
+for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';s.style.top=Math.random()*100+'%';s.style.left=Math.random()*100+'%';s.style.animationDelay=Math.random()*2+'s';loading.appendChild(s);}
+for(let i=0;i<5;i++){const m=document.createElement('div');m.className='meteor';m.style.top=Math.random()*40+'%';m.style.left=Math.random()*100+'%';m.style.animationDelay=(i*0.8)+'s';m.style.animationDuration=(2.8+Math.random())+'s';loading.appendChild(m);}
 
-// ==== PRELOAD BACKGROUND IMAGE ====
-const images=[
-  "https://i.ibb.co.com/Z64HHhkR/IMG-20251014-082055.jpg",
-  "https://i.ibb.co.com/bj7b4wPq/IMG-20251014-082040.jpg"
-];
-let loadedCount=0;
-const welcome=document.getElementById('welcome');
-function checkLoaded(){
-  loadedCount++;
-  if(loadedCount===images.length){
-    setTimeout(()=>{
-      loading.style.opacity='0';
-      setTimeout(()=>{
-        loading.style.display='none';
-        welcome.style.display='flex';
-        void welcome.offsetWidth;
-        welcome.classList.add('show');
-      },800);
-    },1000);
-  }
-}
-images.forEach(src=>{
-  const img=new Image();
-  img.src=src;
-  img.onload=checkLoaded;
-  img.onerror=checkLoaded;
-});
+const images=["https://i.ibb.co.com/Z64HHhkR/IMG-20251014-082055.jpg","https://i.ibb.co.com/bj7b4wPq/IMG-20251014-082040.jpg"];
+let loadedCount=0;const welcome=document.getElementById('welcome');
+function checkLoaded(){loadedCount++;if(loadedCount===images.length){setTimeout(()=>{loading.style.opacity='0';setTimeout(()=>{loading.style.display='none';welcome.style.display='flex';void welcome.offsetWidth;welcome.classList.add('show');},800);},1000);}}
+images.forEach(src=>{const img=new Image();img.src=src;img.onload=checkLoaded;img.onerror=checkLoaded;});
 
-// ==== WELCOME ====
-document.querySelector('.closeWelcome').addEventListener('click',()=>{
-  welcome.style.display='none';
-  document.getElementById('homePanel').classList.add('active');
-});
+document.querySelector('.closeWelcome').addEventListener('click',()=>{welcome.style.display='none';document.getElementById('homePanel').classList.add('active');});
 
-// ==== DRAWER ====
 const drawer=document.getElementById('drawer');
 document.getElementById('hamburger').addEventListener('click',()=>drawer.classList.toggle('open'));
 
-// ==== PANEL SWITCH ====
-const panels={
-  home:document.getElementById('homePanel'),
-  status:document.getElementById('statusPanel'),
-  settings:document.getElementById('settingsPanel')
-};
-function openPanel(name){
-  Object.values(panels).forEach(p=>p.classList.remove('active'));
-  panels[name].classList.add('active');
-}
+const panels={home:document.getElementById('homePanel'),status:document.getElementById('statusPanel'),settings:document.getElementById('settingsPanel')};
+function openPanel(name){Object.values(panels).forEach(p=>p.classList.remove('active'));panels[name].classList.add('active');}
 document.getElementById('homeBtn').onclick=()=>openPanel('home');
 document.getElementById('statusBtn').onclick=()=>openPanel('status');
 document.getElementById('settingsBtn').onclick=()=>openPanel('settings');
 
-// ==== SERVER STATUS ====
-async function fetchServer(){
-  const state=document.getElementById('serverState');
-  const players=document.getElementById('serverPlayers');
-  try{
-    const res=await fetch('https://api.mcstatus.io/v2/status/java/mc.noxstore.site:25567',{cache:'no-store'});
-    const data=await res.json();
-    state.textContent=data.online?'🟢 Online':'🔴 Offline';
-    players.textContent=data.players?.online+'/'+data.players?.max;
-  }catch{
-    state.textContent='⚪ Error';
-    players.textContent='-';
-  }
-}
+// Tombol shop & support
+document.getElementById('shopBtn').onclick=()=>window.open('https://sociabuzz.com/azthera_smp/shop','_blank');
+document.getElementById('supportBtn').onclick=()=>window.open('https://sociabuzz.com/azthera_smp/tribe','_blank');
+
+async function fetchServer(){const state=document.getElementById('serverState');const players=document.getElementById('serverPlayers');try{const res=await fetch('https://api.mcstatus.io/v2/status/java/mc.noxstore.site:25567',{cache:'no-store'});const data=await res.json();state.textContent=data.online?'🟢 Online':'🔴 Offline';players.textContent=data.players?.online+'/'+data.players?.max;}catch{state.textContent='⚪ Error';players.textContent='-';}}
 setInterval(()=>{if(panels.status.classList.contains('active'))fetchServer();},10000);
 
-// ==== THEME TOGGLE ====
-const toggle=document.getElementById('themeToggle');
-const html=document.documentElement;
-let theme=localStorage.getItem('az_theme')||'dark';
-function applyTheme(t){
-  html.setAttribute('data-theme',t);
-  toggle.classList.toggle('active',t==='light');
-  localStorage.setItem('az_theme',t);
-}
-toggle.addEventListener('click',()=>{
-  theme=(theme==='dark'?'light':'dark');
-  applyTheme(theme);
-});
+const toggle=document.getElementById('themeToggle');const html=document.documentElement;let theme=localStorage.getItem('az_theme')||'dark';
+function applyTheme(t){html.setAttribute('data-theme',t);toggle.classList.toggle('active',t==='light');localStorage.setItem('az_theme',t);}
+toggle.addEventListener('click',()=>{theme=(theme==='dark'?'light':'dark');applyTheme(theme);});
 applyTheme(theme);
 </script>
 </body>

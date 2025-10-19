@@ -141,7 +141,34 @@ body::before{
 .panel h2{color:var(--accent-blue);margin-bottom:12px;font-size:2rem;}
 .panel a.home-link{display:block;padding:14px 20px;margin:6px 0;background:var(--glass);border:1px solid var(--glass-2);border-radius:12px;color:inherit;font-weight:700;text-decoration:none;width:220px;text-align:center;transition:.2s;}
 .panel a.home-link:hover{background:var(--glass-2);}
-.status-item{width:100%;padding:12px 16px;margin:6px 0;background:var(--glass);border:1px solid var(--glass-2);border-radius:12px;display:flex;justify-content:space-between;font-weight:700;color:inherit;}
+
+/* STATUS ITEM FIX */
+.status-item{
+  width:100%;
+  padding:12px 16px;
+  margin:6px 0;
+  background:var(--glass);
+  border:1px solid var(--glass-2);
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:700;
+  color:inherit;
+  gap:12px;
+}
+.status-item span:last-child{
+  max-width:180px;
+  overflow-x:auto;
+  white-space:nowrap;
+  text-align:right;
+  scrollbar-width:thin;
+}
+.status-item span:last-child::-webkit-scrollbar{height:4px;}
+.status-item span:last-child::-webkit-scrollbar-thumb{background:var(--accent-blue);border-radius:10px;}
+.status-item span:last-child::-webkit-scrollbar-track{background:transparent;}
+
+/* SIDEBAR */
 #hamburger{position:fixed;top:16px;right:12px;z-index:150;background:var(--panel-dark);color:var(--accent-blue);border-radius:10px;padding:10px;border:1px solid var(--glass-2);cursor:pointer;}
 .mini-drawer{position:fixed;top:0;right:0;width:60px;height:100%;background:var(--panel-dark);display:flex;flex-direction:column;align-items:center;padding-top:70px;gap:10px;transform:translateX(100%);transition:transform .3s ease;z-index:140;border-left:1px solid var(--glass-2);}
 .mini-drawer.open{transform:translateX(0);}
@@ -156,9 +183,7 @@ body::before{
 <body>
 
 <!-- Loading Screen -->
-<div id="loadingScreen">
-  <div class="loader-text">Loading...</div>
-</div>
+<div id="loadingScreen"><div class="loader-text">Loading...</div></div>
 
 <!-- Welcome -->
 <div id="welcome">
@@ -194,7 +219,7 @@ body::before{
 <section class="panel" id="statusPanel">
   <div class="box">
     <h2>Status Server</h2>
-    <div class="status-item"><span>Alamat</span><span> <p>nl-1.noxstore.site:25545</p></span></div>
+    <div class="status-item"><span>Alamat</span><span>nl-1.noxstore.site:25545</span></div>
     <div class="status-item"><span>Status</span><span id="serverState">Checking...</span></div>
     <div class="status-item"><span>Players</span><span id="serverPlayers">-</span></div>
   </div>
@@ -204,7 +229,7 @@ body::before{
   <div class="box">
     <h2>Pengaturan</h2>
     <div class="settings-item">
-      <span>Tema: </span>
+      <span>Tema:</span>
       <div class="toggle-switch" id="themeToggle"><div class="lever"></div></div>
     </div>
   </div>
@@ -230,15 +255,27 @@ function openPanel(name){Object.values(panels).forEach(p=>p.classList.remove('ac
 document.getElementById('homeBtn').onclick=()=>openPanel('home');
 document.getElementById('statusBtn').onclick=()=>openPanel('status');
 document.getElementById('settingsBtn').onclick=()=>openPanel('settings');
-
-// Tombol shop & support
 document.getElementById('shopBtn').onclick=()=>window.open('https://sociabuzz.com/azthera_smp/shop','_blank');
 document.getElementById('supportBtn').onclick=()=>window.open('https://sociabuzz.com/azthera_smp/tribe','_blank');
 
-async function fetchServer(){const state=document.getElementById('serverState');const players=document.getElementById('serverPlayers');try{const res=await fetch('https://api.mcstatus.io/v2/status/java/nl-1.noxstore.site:25545',{cache:'no-store'});const data=await res.json();state.textContent=data.online?'🟢 Online':'🔴 Offline';players.textContent=data.players?.online+'/'+data.players?.max;}catch{state.textContent='⚪ Error';players.textContent='-';}}
+async function fetchServer(){
+  const state=document.getElementById('serverState');
+  const players=document.getElementById('serverPlayers');
+  try{
+    const res=await fetch('https://api.mcstatus.io/v2/status/java/nl-1.noxstore.site:25545',{cache:'no-store'});
+    const data=await res.json();
+    state.textContent=data.online?'🟢 Online':'🔴 Offline';
+    players.textContent=data.players?.online+'/'+data.players?.max;
+  }catch{
+    state.textContent='⚪ Error';
+    players.textContent='-';
+  }
+}
 setInterval(()=>{if(panels.status.classList.contains('active'))fetchServer();},10000);
 
-const toggle=document.getElementById('themeToggle');const html=document.documentElement;let theme=localStorage.getItem('az_theme')||'dark';
+const toggle=document.getElementById('themeToggle');
+const html=document.documentElement;
+let theme=localStorage.getItem('az_theme')||'dark';
 function applyTheme(t){html.setAttribute('data-theme',t);toggle.classList.toggle('active',t==='light');localStorage.setItem('az_theme',t);}
 toggle.addEventListener('click',()=>{theme=(theme==='dark'?'light':'dark');applyTheme(theme);});
 applyTheme(theme);

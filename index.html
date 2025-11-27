@@ -250,7 +250,7 @@ body::before{
 <section class="panel" id="statusPanel">
   <div class="box">
     <h2 id="statusTitle">Status Server</h2>
-    <div class="status-item"><span id="statusAddr">Alamat</span><span>nl-2.nura.host:25565</span></div>
+    <div class="status-item"><span id="statusAddr">Alamat</span><span>nl-1.nura.host:19132</span></div>
     <div class="status-item"><span id="statusLabel">Status</span><span id="serverState">Checking...</span></div>
     <div class="status-item"><span id="playersLabel">Players</span><span id="serverPlayers">-</span></div>
   </div>
@@ -360,7 +360,7 @@ async function fetchServer(){
   const state=document.getElementById('serverState');
   const players=document.getElementById('serverPlayers');
   try{
-    const res=await fetch('https://api.mcstatus.io/v2/status/java/nl-2.nura.host:25565',{cache:'no-store'});
+    const res=await fetch('https://api.mcstatus.io/v2/status/java/nl-1.nura.host:19132',{cache:'no-store'});
     const data=await res.json();
     state.textContent=data.online?'🟢 Online':'🔴 Offline';
     players.textContent=data.players?.online+'/'+data.players?.max;
